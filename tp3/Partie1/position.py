@@ -49,7 +49,7 @@ class Position:
             list: La liste des deux positions.
 
         """
-        #TODO: À compléter
+        return [Position(self.ligne - 1, self.colonne - 1), Position(self.ligne - 1, self.colonne + 1)]
 
     def quatre_positions_diagonales(self):
         """Retourne une liste contenant les quatre positions diagonales à partir de la position actuelle.
@@ -58,7 +58,10 @@ class Position:
             list: La liste des quatre positions.
 
         """
-        #TODO: À compléter
+        return [Position(self.ligne + 1, self.colonne - 1),
+                Position(self.ligne + 1, self.colonne + 1),
+                Position(self.ligne - 1, self.colonne - 1),
+                Position(self.ligne - 1, self.colonne + 1)]
 
     def quatre_positions_sauts(self):
         """Retourne une liste contenant les quatre "sauts" diagonaux à partir de la position actuelle. Les positions
@@ -68,7 +71,10 @@ class Position:
             list: La liste des quatre positions.
 
         """
-        #TODO: À compléter
+        return [Position(self.ligne + 2, self.colonne - 2),
+                Position(self.ligne + 2, self.colonne + 2),
+                Position(self.ligne - 2, self.colonne - 2),
+                Position(self.ligne - 2, self.colonne + 2)]
 
     def __eq__(self, other):
         """Méthode spéciale indiquant à Python comment vérifier si deux positions sont égales. On compare simplement
