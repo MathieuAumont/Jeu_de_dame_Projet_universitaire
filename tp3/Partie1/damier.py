@@ -83,8 +83,6 @@ class Damier:
         else:
             return False
 
-
-
     def piece_peut_se_deplacer_vers(self, position_piece, position_cible):
         """Cette méthode détermine si une pièce (à la position reçue) peut se déplacer à une certaine position cible.
         On parle ici d'un déplacement standard (et non une prise).
@@ -240,11 +238,11 @@ if __name__ == "__main__":
     assert not un_damier.position_est_dans_damier(piece)
     piece = Position(0, -1)
     assert not un_damier.position_est_dans_damier(piece)
-    piece = Position(0,0)
+    piece = Position(0, 0)
     assert un_damier.position_est_dans_damier(piece)
     piece = Position(8, 0)
     assert not un_damier.position_est_dans_damier(piece)
-    piece = Position(0,8)
+    piece = Position(0, 8)
     assert not un_damier.position_est_dans_damier(piece)
 
     print('Test unitaires passés avec succès!')
