@@ -78,7 +78,12 @@ class Damier:
             bool: True si la position est dans les bornes, False autrement.
 
         """
-        #TODO: À compléter
+        if position.ligne in range(0, 8):
+            return position.colonne in range(0, 8)
+        else:
+            return False
+
+
 
     def piece_peut_se_deplacer_vers(self, position_piece, position_cible):
         """Cette méthode détermine si une pièce (à la position reçue) peut se déplacer à une certaine position cible.
@@ -230,7 +235,17 @@ if __name__ == "__main__":
 
     un_damier = Damier()
 
-    # TODO: À compléter
+    # Tester les position_est_dans_damier
+    piece = Position(-1, 0)
+    assert not un_damier.position_est_dans_damier(piece)
+    piece = Position(0, -1)
+    assert not un_damier.position_est_dans_damier(piece)
+    piece = Position(0,0)
+    assert un_damier.position_est_dans_damier(piece)
+    piece = Position(8, 0)
+    assert not un_damier.position_est_dans_damier(piece)
+    piece = Position(0,8)
+    assert not un_damier.position_est_dans_damier(piece)
 
     print('Test unitaires passés avec succès!')
 
