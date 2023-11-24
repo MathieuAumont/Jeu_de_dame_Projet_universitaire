@@ -119,7 +119,33 @@ class Damier:
             bool: True si la pièce peut sauter vers la position cible, False autrement.
 
         """
-        #TODO: À compléter
+        if position_piece not in self.cases:
+            return False
+
+        if position_cible in self.cases:
+            return False
+
+        if position_cible not in position_piece.quatre_positions_sauts():
+            return False
+
+        if position_cible.ligne > position_piece.ligne:
+            if position_cible.colonne > position_piece.colonne:
+                position_centre = Position(position_cible.ligne - 1, position_cible.colonne - 1)
+            else:
+                position_centre = Position(position_cible.ligne - 1, position_cible.colonne + 1)
+        else:
+            if position_cible.colonne > position_piece.colonne:
+                position_centre = Position(position_cible.ligne + 1, position_cible.colonne - 1)
+            else:
+                position_centre = Position(position_cible.ligne + 1, position_cible.colonne + 1)
+
+        if position_centre not in self.cases:
+            return False
+
+        if self.cases[position_centre].couleur == self.cases[position_piece].couleur:
+            return False
+
+        return True
 
     def piece_peut_se_deplacer(self, position_piece):
         """Vérifie si une pièce à une certaine position a la possibilité de se déplacer (sans faire de saut).
@@ -229,10 +255,12 @@ if __name__ == "__main__":
     print('Test unitaires de la classe "Damier"...')
 
     un_damier = Damier()
+    damier_test = Damier()
+    damier_test.cases[Position(4,3)] = Piece("noir","pion")
+    assert un_damier.piece_peut_sauter_vers(Position(6,6), Position(4,4)) is False
+    assert un_damier.piece_peut_sauter_vers(Position(5,2), Position(3,4)) is False
+    assert damier_test.piece_peut_sauter_vers(Position(5,2), Position(3,4)) is True
 
-    # TODO: À compléter
-
+    # print(un_damier)
     print('Test unitaires passés avec succès!')
 
-    # NOTEZ BIEN: Pour vous aider lors du développement, affichez le damier!
-    print(un_damier)
