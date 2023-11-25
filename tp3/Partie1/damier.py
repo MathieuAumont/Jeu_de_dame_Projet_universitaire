@@ -170,7 +170,41 @@ class Damier:
             bool: True si une pièce est à la position reçue et celle-ci peut faire une prise. False autrement.
 
         """
-        #TODO: À compléter
+        if self.recuperer_piece_a_position(position_piece) is None:  # cas où à la position initiale il n'y a pas de piece
+            return False
+
+        piece_qui_deplace = self.recuperer_piece_a_position(position_piece)
+
+        # Pour les dames (la couleur n'a pas d'importance)
+        if piece_qui_deplace.type_de_piece == "dame":  # si c'est une dame
+            for index in range(0, 4):
+                if self.position_est_dans_damier(position_piece.quatre_positions_sauts()[index]):  # est-ce que le saut est dans le damier
+                    if self.recuperer_piece_a_position(position_piece.quatre_positions_sauts()[index]) is None:  # est-ce qu'il y a personne à l'arriver
+                        if self.recuperer_piece_a_position(position_piece.quatre_positions_diagonales()[index]) is not None:  # s'il y a une piece à mager
+                            if self.recuperer_piece_a_position(position_piece.quatre_positions_diagonales()[index]).couleur != self.recuperer_piece_a_position(position_piece).couleur:  # S'ils n'ont pas la même couleur
+                                return True
+        # Pour le pion blanc
+        elif piece_qui_deplace.couleur == "blanc":  # obliger que ça soir pion, donc on cherche sa couleur
+            for index in range(0, 2):
+                if self.position_est_dans_damier(position_piece.quatre_positions_sauts()[index+2]): # est-ce que le saut est dans le damier
+                    if self.recuperer_piece_a_position(position_piece.quatre_positions_sauts()[index+2]) is None: # est-ce qu'il y a personne à l'arriver([2] parce que c'est celui correspondant à diagonale haut [0])
+                        if self.recuperer_piece_a_position(position_piece.positions_diagonales_haut()[index]) is not None:  # s'il y a une piece à mager
+                            if self.recuperer_piece_a_position(position_piece.positions_diagonales_haut()[index]).couleur == "noir":  # si la piece à manger est noir
+                                return True
+        # Pour pion noir
+        else:  # obliger que ça soit pion noir
+            for index in range(0,2):
+                if self.position_est_dans_damier(position_piece.quatre_positions_sauts()[index]):  # est-ce que le saut est dans le damier
+                    if self.recuperer_piece_a_position(position_piece.quatre_positions_sauts()[index]) is None:  # est-ce qu'il y a personne à l'arriver([0] parce que c'est celui correspondant à diagonale bas [0])
+                        if self.recuperer_piece_a_position(position_piece.positions_diagonales_bas()[index]) is not None:  # s'il y a une piece à mager
+                            if self.recuperer_piece_a_position(position_piece.positions_diagonales_bas()[index]).couleur == "blanc":  # si la piece à manger est blanche
+                                return True
+        return False  # si t'es arriver ici, il n'y a aucune piece à manger
+
+
+
+
+
 
     def piece_de_couleur_peut_se_deplacer(self, couleur):
         """Vérifie si n'importe quelle pièce d'une certaine couleur reçue en argument a la possibilité de se déplacer
@@ -288,6 +322,33 @@ if __name__ == "__main__":
     assert damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
     # Teste pas bon pour une dame blanche
     assert not damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 1))
+
+    # Tester piece_peut_manger
+    # IL FAUDRAIT PROBABLEMENT FAIRE PLUS DE TESTE
+    # Teste si position de départ contient pas de pièce
+    assert not un_damier.piece_peut_faire_une_prise(Position(0, 0))
+    # Teste dame ne peut pas faire de prise
+    assert not damier_teste.piece_peut_faire_une_prise(Position(4, 0))
+    damier_teste.cases[Position(6, 1)] = Piece("blanc", "dame")
+    # Teste dame ne peut pas faire une prise à cause de la couleur
+    assert not damier_teste.piece_peut_faire_une_prise(Position(6, 1))
+    damier_teste.cases[Position(6, 1)] = Piece("noir", "dame")
+    # Teste dame peut faire une prise
+    assert damier_teste.piece_peut_faire_une_prise(Position(6, 1))
+    # Teste pion noir ne peut pas faire une prise
+    assert not damier_teste.piece_peut_faire_une_prise(Position(2, 1))
+    damier_teste.cases[Position(3, 2)] = Piece("noir", "dame")
+    # Teste pion noir ne peut pas faire une prise à cause de la couleur
+    assert not damier_teste.piece_peut_faire_une_prise(Position(2, 1))
+    damier_teste.cases[Position(3, 2)] = Piece("blanc", "dame")
+    # Teste pion noir peut faire une prise
+    assert damier_teste.piece_peut_faire_une_prise(Position(2, 1))
+    # Teste pion blanc ne peut pas faire une prise à cause d'un blocage à l'arriver
+    assert not damier_teste.piece_peut_faire_une_prise(Position(7, 0))
+    damier_teste.cases[Position(4, 1)] = Piece("noir", "dame")
+    # Teste pion blanc peut faire une prise
+    assert damier_teste.piece_peut_faire_une_prise(Position(5, 2))
+
     print('Test unitaires passés avec succès!')
 
     # NOTEZ BIEN: Pour vous aider lors du développement, affichez le damier!
