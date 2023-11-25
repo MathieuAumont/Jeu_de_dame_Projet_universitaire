@@ -201,11 +201,6 @@ class Damier:
                                 return True
         return False  # si t'es arriver ici, il n'y a aucune piece à manger
 
-
-
-
-
-
     def piece_de_couleur_peut_se_deplacer(self, couleur):
         """Vérifie si n'importe quelle pièce d'une certaine couleur reçue en argument a la possibilité de se déplacer
         vers une case adjacente (sans saut).
@@ -233,7 +228,7 @@ class Damier:
         Returns:
             bool: True si une pièce de la couleur reçue peut faire un saut (une prise), False autrement.
         """
-        #TODO: À compléter
+
 
     def deplacer(self, position_source, position_cible):
         """Effectue le déplacement sur le damier. Si le déplacement est valide, on doit mettre à jour le dictionnaire
@@ -324,7 +319,7 @@ if __name__ == "__main__":
     assert not damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 1))
 
     # Tester piece_peut_manger
-    # IL FAUDRAIT PROBABLEMENT FAIRE PLUS DE TESTE
+    # IL FAUDRAIT PROBABLEMENT FAIRE PLUS DE TESTE ET QU'ON PEUT RETIRER DES PIECES
     # Teste si position de départ contient pas de pièce
     assert not un_damier.piece_peut_faire_une_prise(Position(0, 0))
     # Teste dame ne peut pas faire de prise
@@ -348,9 +343,42 @@ if __name__ == "__main__":
     damier_teste.cases[Position(4, 1)] = Piece("noir", "dame")
     # Teste pion blanc peut faire une prise
     assert damier_teste.piece_peut_faire_une_prise(Position(5, 2))
+    damier_teste.cases.pop(Position(7, 0))
+
+
+
+    # Prise 2 des testes piece_peut_manger
+    damier_vide = Damier()
+    damier_vide.cases.pop(Position(0, 1))
+    damier_vide.cases.pop(Position(0, 3))
+    damier_vide.cases.pop(Position(0, 5))
+    damier_vide.cases.pop(Position(0, 7))
+    damier_vide.cases.pop(Position(1, 0))
+    damier_vide.cases.pop(Position(1, 2))
+    damier_vide.cases.pop(Position(1, 4))
+    damier_vide.cases.pop(Position(1, 6))
+    damier_vide.cases.pop(Position(2, 1))
+    damier_vide.cases.pop(Position(2, 3))
+    damier_vide.cases.pop(Position(2, 5))
+    damier_vide.cases.pop(Position(2, 7))
+    damier_vide.cases.pop(Position(5, 0))
+    damier_vide.cases.pop(Position(5, 2))
+    damier_vide.cases.pop(Position(5, 4))
+    damier_vide.cases.pop(Position(5, 6))
+    damier_vide.cases.pop(Position(6, 1))
+    damier_vide.cases.pop(Position(6, 3))
+    damier_vide.cases.pop(Position(6, 5))
+    damier_vide.cases.pop(Position(6, 7))
+    damier_vide.cases.pop(Position(7, 0))
+    damier_vide.cases.pop(Position(7, 2))
+    damier_vide.cases.pop(Position(7, 4))
+    damier_vide.cases.pop(Position(7, 6))
+    # Teste si position de départ contient pas de pièce
+    assert not un_damier.piece_peut_faire_une_prise(Position(0, 0))
 
     print('Test unitaires passés avec succès!')
 
     # NOTEZ BIEN: Pour vous aider lors du développement, affichez le damier!
     print(un_damier)
     print(damier_teste)
+    print(damier_vide)
