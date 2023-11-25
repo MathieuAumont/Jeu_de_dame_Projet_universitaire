@@ -1,4 +1,4 @@
-# Auteurs: À compléter
+# Auteurs: Kim et Mathieu
 
 from tp3.Partie1.piece import Piece
 from tp3.Partie1.position import Position
