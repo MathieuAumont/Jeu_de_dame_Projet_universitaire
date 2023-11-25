@@ -78,8 +78,8 @@ class Damier:
             bool: True si la position est dans les bornes, False autrement.
 
         """
-        if position.ligne in range(0, 8):
-            return position.colonne in range(0, 8)
+        if position.ligne in range(0, self.n_lignes):
+            return position.colonne in range(0, self.n_colonnes)
         else:
             return False
 
@@ -102,7 +102,24 @@ class Damier:
             bool: True si la pièce peut se déplacer à la position cible, False autrement.
 
         """
-        #TODO: À compléter
+        if self.recuperer_piece_a_position(position_cible) is not None:  # cas où il y a une piece à la position cible
+            return False
+        if not self.position_est_dans_damier(position_cible):  # cas où la position cible n'est pas dans le damier
+            return False
+        if self.recuperer_piece_a_position(position_piece) is None:  # cas où à la position initiale il n'y a pas de piece
+            return False
+
+        # il faut regarder la couleur et le type de piece pour avoir les vrai bon déplacement.
+
+        piece_qui_deplace = self.recuperer_piece_a_position(position_piece)
+
+        if piece_qui_deplace.type_de_piece == "pion":
+            if piece_qui_deplace.couleur == "noir":
+                return position_piece.positions_diagonales_bas()[0] == position_cible or position_piece.positions_diagonales_bas()[1] == position_cible
+            else:  # alors elle est blanche
+                return position_piece.positions_diagonales_haut()[0] == position_cible or position_piece.positions_diagonales_haut()[1] == position_cible
+        else:  # alors elle est de type dame
+            return position_piece.quatre_positions_diagonales()[0] == position_cible or position_piece.quatre_positions_diagonales()[1] == position_cible or position_piece.quatre_positions_diagonales()[2] == position_cible or position_piece.quatre_positions_diagonales()[3] == position_cible
 
     def piece_peut_sauter_vers(self, position_piece, position_cible):
         """Cette méthode détermine si une pièce (à la position reçue) peut sauter vers une certaine position cible.
@@ -245,7 +262,34 @@ if __name__ == "__main__":
     piece = Position(0, 8)
     assert not un_damier.position_est_dans_damier(piece)
 
+    # Tester piece_peut_deplacer_vers
+    # Teste position finale hors tableau
+    assert not un_damier.piece_peut_se_deplacer_vers(Position(0, 1), Position(0, 8))
+    # Teste position depart ne contient pas de piece
+    assert not un_damier.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
+    # Teste position finale contient une piece
+    assert not un_damier.piece_peut_se_deplacer_vers(Position(1, 0), Position(2, 1))
+    # Teste bon pour pion noir
+    assert un_damier.piece_peut_se_deplacer_vers(Position(2, 1), Position(3, 0))
+    # Teste pas bon pour pion noir
+    assert not un_damier.piece_peut_se_deplacer_vers(Position(2, 1), Position(2, 0))
+    # Teste bon pour pion blanc
+    assert un_damier.piece_peut_se_deplacer_vers(Position(5, 0), Position(4, 1))
+    # Teste pas bon pour pion blanc
+    assert not un_damier.piece_peut_se_deplacer_vers(Position(5, 0), Position(4, 0))
+    damier_teste = Damier()
+    damier_teste.cases[Position(4,1)] = Piece("noir", "dame")
+    # Teste bon pour une dame noir
+    assert damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
+    # Teste pas bon pour dame noir
+    assert not damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(4, 0))
+    damier_teste.cases[Position(4, 1)] = Piece("blanc", "dame")
+    # Teste bon pour une dame blanche
+    assert damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
+    # Teste pas bon pour une dame blanche
+    assert not damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 1))
     print('Test unitaires passés avec succès!')
 
     # NOTEZ BIEN: Pour vous aider lors du développement, affichez le damier!
     print(un_damier)
+    print(damier_teste)
