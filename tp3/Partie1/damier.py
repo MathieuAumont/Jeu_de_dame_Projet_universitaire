@@ -230,7 +230,8 @@ class Damier:
                                                                index]) is not None:  # s'il y a une piece à mager
                             if self.recuperer_piece_a_position(position_piece.quatre_positions_diagonales()[
                                                                    index]).couleur != self.recuperer_piece_a_position(
-                                position_piece).couleur:  # S'ils n'ont pas la même couleur
+                                                                    position_piece).couleur:
+                                # S'ils n'ont pas la même couleur
                                 return True
         # Pour le pion blanc
         elif piece_qui_deplace.couleur == "blanc":  # obliger que ça soir pion, donc on cherche sa couleur
@@ -392,34 +393,7 @@ if __name__ == "__main__":
     # Teste pas bon pour une dame blanche
     assert not damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 1))
 
-    # Tester piece_peut_manger
-    # IL FAUDRAIT PROBABLEMENT FAIRE PLUS DE TESTE ET QU'ON PEUT RETIRER DES PIECES
-    # Teste si position de départ contient pas de pièce
-    assert not un_damier.piece_peut_faire_une_prise(Position(0, 0))
-    # Teste dame ne peut pas faire de prise
-    assert not damier_teste.piece_peut_faire_une_prise(Position(4, 0))
-    damier_teste.cases[Position(6, 1)] = Piece("blanc", "dame")
-    # Teste dame ne peut pas faire une prise à cause de la couleur
-    assert not damier_teste.piece_peut_faire_une_prise(Position(6, 1))
-    damier_teste.cases[Position(6, 1)] = Piece("noir", "dame")
-    # Teste dame peut faire une prise
-    assert damier_teste.piece_peut_faire_une_prise(Position(6, 1))
-    # Teste pion noir ne peut pas faire une prise
-    assert not damier_teste.piece_peut_faire_une_prise(Position(2, 1))
-    damier_teste.cases[Position(3, 2)] = Piece("noir", "dame")
-    # Teste pion noir ne peut pas faire une prise à cause de la couleur
-    assert not damier_teste.piece_peut_faire_une_prise(Position(2, 1))
-    damier_teste.cases[Position(3, 2)] = Piece("blanc", "dame")
-    # Teste pion noir peut faire une prise
-    assert damier_teste.piece_peut_faire_une_prise(Position(2, 1))
-    # Teste pion blanc ne peut pas faire une prise à cause d'un blocage à l'arriver
-    assert not damier_teste.piece_peut_faire_une_prise(Position(7, 0))
-    damier_teste.cases[Position(4, 1)] = Piece("noir", "dame")
-    # Teste pion blanc peut faire une prise
-    assert damier_teste.piece_peut_faire_une_prise(Position(5, 2))
-    damier_teste.cases.pop(Position(7, 0))
-
-    # Prise 2 des testes piece_peut_manger
+    # Testes piece_peut_manger
     damier_vide = Damier()
     damier_vide.cases.pop(Position(0, 1))
     damier_vide.cases.pop(Position(0, 3))
@@ -446,12 +420,134 @@ if __name__ == "__main__":
     damier_vide.cases.pop(Position(7, 4))
     damier_vide.cases.pop(Position(7, 6))
     # Teste si position de départ contient pas de pièce
-    assert not un_damier.piece_peut_faire_une_prise(Position(0, 0))
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 0))
+
+    # Teste Dame peut manger
+    damier_vide.cases[Position(0, 1)] = Piece("noir", "dame")
+    damier_vide.cases[Position(1, 2)] = Piece("blanc", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste Dame si la personne à manger est de même couleur
+    damier_vide.cases[Position(1, 2)] = Piece("noir", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste Dame s'il n'y a personne mangé
+    damier_vide.cases.pop(Position(1,2))
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste Dame s'il l'arriver n'est pas dans le damier
+    damier_vide.cases[Position(1, 0)] = Piece("noir", "dame")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste Dame s'il l'arriver contient une piece
+    damier_vide.cases.pop(Position(1, 0))
+    damier_vide.cases[Position(1, 2)] = Piece("blanc", "pion")
+    damier_vide.cases[Position(2, 3)] = Piece("blanc", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    damier_vide.cases.pop(Position(2, 3))
+
+    # Teste pion noir peut manger
+    damier_vide.cases[Position(0, 1)] = Piece("noir", "pion")
+    damier_vide.cases[Position(1, 2)] = Piece("blanc", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste pion noir si la personne à manger est de même couleur
+    damier_vide.cases[Position(1, 2)] = Piece("noir", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste pion noir s'il n'y a personne mangé
+    damier_vide.cases.pop(Position(1, 2))
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste pion noir s'il l'arriver n'est pas dans le damier
+    damier_vide.cases[Position(1, 0)] = Piece("blanc", "dame")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste pion noir s'il l'arriver contient une piece
+    damier_vide.cases.pop(Position(1, 0))
+    damier_vide.cases[Position(1, 2)] = Piece("blanc", "pion")
+    damier_vide.cases[Position(2, 3)] = Piece("noir", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    damier_vide.cases.pop(Position(0, 1))
+    damier_vide.cases.pop(Position(1, 2))
+    damier_vide.cases.pop(Position(2, 3))
+
+    # Teste pion blanc peut manger
+    damier_vide.cases[Position(7, 1)] = Piece("blanc", "pion")
+    damier_vide.cases[Position(6, 2)] = Piece("noir", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(7, 1))
+    # Teste pion blanc si la personne à manger est de même couleur
+    damier_vide.cases[Position(6, 2)] = Piece("blanc", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(7, 1))
+    # Teste pion blanc s'il n'y a personne mangé
+    damier_vide.cases.pop(Position(6, 2))
+    assert not damier_vide.piece_peut_faire_une_prise(Position(7, 1))
+    # Teste pion blanc s'il l'arriver n'est pas dans le damier
+    damier_vide.cases[Position(6, 0)] = Piece("noir", "dame")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    # Teste pion blanc s'il l'arriver contient une piece
+    damier_vide.cases.pop(Position(6, 0))
+    damier_vide.cases[Position(6, 2)] = Piece("noir", "pion")
+    damier_vide.cases[Position(5, 3)] = Piece("noir", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
+    damier_vide.cases.pop(Position(6, 2))
+    damier_vide.cases.pop(Position(7, 1))
+    damier_vide.cases.pop(Position(5, 3))
+
+    # Teste tous type de piece peut manger dans les directions (et ne mange pas dans une direction)
+    damier_vide.cases[Position(3, 3)] = Piece("noir", "dame")
+    damier_vide.cases[Position(2, 2)] = Piece("blanc", "dame")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 2))
+    damier_vide.cases[Position(2, 4)] = Piece("blanc", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 4))
+    damier_vide.cases[Position(4, 2)] = Piece("blanc", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 2))
+    damier_vide.cases[Position(4, 4)] = Piece("blanc", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 4))
+
+    damier_vide.cases[Position(3, 3)] = Piece("blanc", "dame")
+    damier_vide.cases[Position(2, 2)] = Piece("noir", "dame")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 2))
+    damier_vide.cases[Position(2, 4)] = Piece("noir", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 4))
+    damier_vide.cases[Position(4, 2)] = Piece("noir", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 2))
+    damier_vide.cases[Position(4, 4)] = Piece("noir", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 4))
+
+    damier_vide.cases[Position(3, 3)] = Piece("blanc", "pion")
+    damier_vide.cases[Position(2, 2)] = Piece("noir", "dame")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 2))
+    damier_vide.cases[Position(2, 4)] = Piece("noir", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 4))
+    damier_vide.cases[Position(4, 2)] = Piece("noir", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 2))
+    damier_vide.cases[Position(4, 4)] = Piece("noir", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 4))
+
+    damier_vide.cases[Position(3, 3)] = Piece("noir", "pion")
+    damier_vide.cases[Position(2, 2)] = Piece("blanc", "dame")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 2))
+    damier_vide.cases[Position(2, 4)] = Piece("blanc", "pion")
+    assert not damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(2, 4))
+    damier_vide.cases[Position(4, 2)] = Piece("blanc", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 2))
+    damier_vide.cases[Position(4, 4)] = Piece("blanc", "pion")
+    assert damier_vide.piece_peut_faire_une_prise(Position(3, 3))
+    damier_vide.cases.pop(Position(4, 4))
+    damier_vide.cases.pop(Position(3, 3))
 
     print('Test unitaires passés avec succès!')
 
     # NOTEZ BIEN: Pour vous aider lors du développement, affichez le damier!
     print(un_damier)
     print(damier_teste)
-    print(damier_vide)
     print(damier_test)
+    print(damier_vide)
