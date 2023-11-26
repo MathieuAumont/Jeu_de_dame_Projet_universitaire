@@ -102,7 +102,41 @@ class Partie:
             Position, Position: Un couple de deux positions (source et cible).
 
         """
-        #TODO: À compléter
+        # ON NE SAIT PAS COMMENT S'OCCUPPER DES CAS D'EXEPTION ENCORE, IL VA FALLOIR Y RETOURNER
+        # J'AGIS COMME SI CE N'EST QUE DES ENTIERS QU'IL VONT RENTRER
+        position_source_ligne = ""
+        position_source_colone = ""
+        position_cible_ligne = ""
+        position_cible_colone = ""
+
+        while position_source_ligne == "" and position_source_colone == "" and position_cible_ligne == "" and position_cible_colone == "":
+            position_source_ligne = int(input("Veuillez entrer votre position source (ligne) : "))
+            position_source_colone = int(input("Veuillez entrer votre position source (colone) : "))
+            position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
+            position_cible_colone = int(input("Veuillez entrer votre position cible (colone) : "))
+            position_source_selectionnee = Position(position_source_ligne, position_source_colone)
+            position_cible_selectionnee = Position(position_cible_ligne, position_cible_colone)
+
+            if not self.position_source_valide(position_source_selectionnee)[0]:
+                print("Votre position source est invalide car: ", self.position_source_valide(position_source_selectionnee)[1])
+                position_source_ligne = ""
+                position_source_colone = ""
+                position_cible_ligne = ""
+                position_cible_colone = ""
+
+            # position_cible_valide pas encore écrit au moment de l'écriture
+            elif not self.position_cible_valide(position_cible_selectionnee)[0]:
+                print("Votre position source est invalide car: ", self.position_cible_valide(position_cible_selectionnee)[1])
+                position_source_ligne = ""
+                position_source_colone = ""
+                position_cible_ligne = ""
+                position_cible_colone = ""
+        # Il n'y aura pas le probleme mentionner,
+        # parce qu'il ne sortira jamais du "while" sans avoir de position source et cible valide
+        return (position_source_selectionnee, position_cible_selectionnee)
+
+
+
 
     def tour(self):
         """Cette méthode effectue le tour d'un joueur, et doit effectuer les actions suivantes:
@@ -175,5 +209,6 @@ if __name__ == "__main__":
     assert (essaie_partie.position_source_valide(Position(5, 0)) ==
             (False, "Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."))
     assert essaie_partie.position_source_valide(Position(5, 2)) == (True, "")
-
+    essaie_partie.damier.cases.pop(Position(4, 3))
+    print(essaie_partie.demander_positions_deplacement())
     print("assert réussit")
