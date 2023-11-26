@@ -198,7 +198,6 @@ class Damier:
 
         return False
 
-
     def piece_peut_faire_une_prise(self, position_piece):
         """Vérifie si une pièce à une certaine position a la possibilité de faire une prise.
 
@@ -286,7 +285,11 @@ class Damier:
         Returns:
             bool: True si une pièce de la couleur reçue peut faire un saut (une prise), False autrement.
         """
-        # TODO: À compléter
+        for element in self.cases:
+            if self.cases[element].couleur == couleur and self.piece_peut_faire_une_prise(element):
+                return True
+        return False
+
 
     def deplacer(self, position_source, position_cible):
         """Effectue le déplacement sur le damier. Si le déplacement est valide, on doit mettre à jour le dictionnaire
@@ -353,7 +356,6 @@ if __name__ == "__main__":
     assert damier_test.piece_peut_se_deplacer(Position(3,2)) is True
     assert un_damier.piece_peut_se_deplacer(Position(7,2)) is False
 
-
     # Tester les position_est_dans_damier
     piece = Position(-1, 0)
     assert not un_damier.position_est_dans_damier(piece)
@@ -381,17 +383,17 @@ if __name__ == "__main__":
     assert un_damier.piece_peut_se_deplacer_vers(Position(5, 0), Position(4, 1))
     # Teste pas bon pour pion blanc
     assert not un_damier.piece_peut_se_deplacer_vers(Position(5, 0), Position(4, 0))
-    damier_teste = Damier()
-    damier_teste.cases[Position(4, 1)] = Piece("noir", "dame")
+    damier_teste_kim = Damier()
+    damier_teste_kim.cases[Position(4, 1)] = Piece("noir", "dame")
     # Teste bon pour une dame noir
-    assert damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
+    assert damier_teste_kim.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
     # Teste pas bon pour dame noir
-    assert not damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(4, 0))
-    damier_teste.cases[Position(4, 1)] = Piece("blanc", "dame")
+    assert not damier_teste_kim.piece_peut_se_deplacer_vers(Position(4, 1), Position(4, 0))
+    damier_teste_kim.cases[Position(4, 1)] = Piece("blanc", "dame")
     # Teste bon pour une dame blanche
-    assert damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
+    assert damier_teste_kim.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 0))
     # Teste pas bon pour une dame blanche
-    assert not damier_teste.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 1))
+    assert not damier_teste_kim.piece_peut_se_deplacer_vers(Position(4, 1), Position(3, 1))
 
     # Testes piece_peut_manger
     damier_vide = Damier()
@@ -544,10 +546,18 @@ if __name__ == "__main__":
     damier_vide.cases.pop(Position(4, 4))
     damier_vide.cases.pop(Position(3, 3))
 
+    # Teste piece_de_couleur_peut_faire_une_prise
+    assert not un_damier.piece_de_couleur_peut_faire_une_prise("noir")
+    assert not un_damier.piece_de_couleur_peut_faire_une_prise("blanc")
+    damier_teste_kim.cases[Position(4, 1)] = Piece("noir", "pion")
+    assert damier_teste_kim.piece_de_couleur_peut_faire_une_prise("blanc")
+    assert not damier_teste_kim.piece_de_couleur_peut_faire_une_prise("noir")
+
     print('Test unitaires passés avec succès!')
 
     # NOTEZ BIEN: Pour vous aider lors du développement, affichez le damier!
     print(un_damier)
-    print(damier_teste)
+    print(damier_teste_kim)
     print(damier_test)
     print(damier_vide)
+
