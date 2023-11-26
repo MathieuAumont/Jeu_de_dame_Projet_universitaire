@@ -1,8 +1,9 @@
-# Auteurs: À compléter
+# Auteurs: Kim et Mathieu
 
 from tp3.Partie1.damier import Damier
 from tp3.Partie1.position import Position
-
+# le prochain est pour les testes
+from tp3.Partie1.piece import Piece
 
 class Partie:
     """Gestionnaire de partie de dames.
@@ -57,7 +58,26 @@ class Partie:
                  deuxième élément est un message d'erreur (ou une chaîne vide s'il n'y a pas d'erreur).
 
         """
-        #TODO: À compléter
+        if self.damier.position_est_dans_damier(position_source):  # Est-ce que c'est dans le damier
+            if self.damier.recuperer_piece_a_position(position_source) is None:  # Est-ce qu'il y a une piece à la case
+                return False, "Il n'y a pas de piece dans votre case."
+            elif self.damier.recuperer_piece_a_position(position_source).couleur != self.couleur_joueur_courant:
+                # Est-ce que la piece t'appartient
+                return False, "Cette piece ne vous appartient pas."
+        else:
+            return False, "Vous n'êtes pas dans le damier."
+
+        if not self.damier.piece_de_couleur_peut_faire_une_prise(self.damier.recuperer_piece_a_position(position_source).couleur):
+            # Est-ce que le joueur peut faire une prise?
+            if self.damier.piece_peut_se_deplacer(position_source):  # Puisque le joueur peut pas faire de prise,
+                # est-ce que la piece peut se déplacer
+                return True, ""
+            else:
+                return False, "Cette piece ne peut pas se déplacer."
+        elif self.damier.piece_peut_faire_une_prise(position_source):  # Est-ce que cette piece peut faire une prise
+            return True, ""
+        else:
+            return False, "Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."
 
     def position_cible_valide(self, position_cible):
         """Vérifie si la position cible est valide (en fonction de la position source sélectionnée). Doit non seulement
@@ -141,3 +161,19 @@ class Partie:
             return "blanc"
 
 
+# NON ÉVALUER MAIS POUR M'AIDER
+if __name__ == "__main__":
+
+    # Teste position_source_valide
+    essaie_partie = Partie()
+    assert essaie_partie.position_source_valide(Position(-1, 5)) == (False, "Vous n'êtes pas dans le damier.")
+    assert essaie_partie.position_source_valide(Position(3, 3)) == (False, "Il n'y a pas de piece dans votre case.")
+    assert essaie_partie.position_source_valide(Position(0, 1)) == (False, "Cette piece ne vous appartient pas.")
+    assert essaie_partie.position_source_valide(Position(7, 0)) == (False, "Cette piece ne peut pas se déplacer.")
+    assert essaie_partie.position_source_valide(Position(5, 0)) == (True, "")
+    essaie_partie.damier.cases[Position(4, 3)] = Piece("noir", "pion")
+    assert (essaie_partie.position_source_valide(Position(5, 0)) ==
+            (False, "Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."))
+    assert essaie_partie.position_source_valide(Position(5, 2)) == (True, "")
+
+    print("assert réussit")
