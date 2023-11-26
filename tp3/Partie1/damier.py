@@ -1,4 +1,4 @@
-# Auteurs: À compléter
+# Auteurs: Kim et Mathieu
 
 from tp3.Partie1.piece import Piece
 from tp3.Partie1.position import Position
@@ -79,10 +79,7 @@ class Damier:
 
         """
 
-        if position.ligne in range(0, self.n_lignes):
-            return position.colonne in range(0, self.n_colonnes)
-        else:
-            return False
+        return position.ligne in range(0, self.n_lignes) and position.colonne in range(0, self.n_colonnes)
 
     def piece_peut_se_deplacer_vers(self, position_piece, position_cible):
         """Cette méthode détermine si une pièce (à la position reçue) peut se déplacer à une certaine position cible.
