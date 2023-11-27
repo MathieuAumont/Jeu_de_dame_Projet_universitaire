@@ -153,11 +153,9 @@ class Damier:
             if position in position_cible.quatre_positions_diagonales():
                 position_centre = position
 
-        if position_centre not in self.cases:  # Erreur si la case centrale n'est pas vide
-            return False
-
-        # Erreur si la case centrale et la case d'orgine on la même couleur
-        if self.cases[position_centre].couleur == self.cases[position_piece].couleur:
+        # Erreur si la case centrale est vide ou si elle et la case d'orgine ont la même couleur
+        if (position_centre not in self.cases or
+                self.cases[position_centre].couleur == self.cases[position_piece].couleur):
             return False
 
         return True
@@ -267,7 +265,10 @@ class Damier:
         Returns:
             bool: True si une pièce de la couleur reçue peut faire un déplacement standard, False autrement.
         """
-        # TODO: À compléter
+        for piece in self.cases:
+            if self.cases[piece].couleur == couleur and self.piece_peut_se_deplacer(piece):
+                return True
+        return False
 
     def piece_de_couleur_peut_faire_une_prise(self, couleur):
         """Vérifie si n'importe quelle pièce d'une certaine couleur reçue en argument a la possibilité de faire un
@@ -311,7 +312,46 @@ class Damier:
                 "erreur" autrement.
 
         """
-        # TODO: À compléter
+        if not self.position_est_dans_damier(position_source) or not self.position_est_dans_damier(position_cible):
+            return "erreur"
+
+        if self.piece_peut_faire_une_prise(position_source):  #déterminer si la pièce source peut faire une prise
+            if position_cible in position_source.quatre_positions_sauts(): #vérifie si position cible est valide avec une prise
+                self.cases[position_cible] = self.cases[position_source]  # modifie le damier avec le déplacement
+                self.cases.pop(position_source)  # retirer la position source, car celle-ci déplacer
+                if self.cases[position_cible].couleur == "blanc":  #vérifie s'il y a cas de promotion chez les blancs
+                    if position_cible.ligne == 0:
+                        self.cases[position_cible].promouvoir()
+                else:                                              # idem chez les noirs
+                    if position_cible.ligne == 7:
+                        self.cases[position_cible].promouvoir()
+                return "prise"
+
+        elif self.piece_peut_se_deplacer(position_source):  # détermine si la pièce peut se déplacer
+            if self.cases[position_source].type_de_piece == "dame":  # cas si piece est dame
+                if position_cible in position_source.quatre_positions_diagonales():  #verifie si position cible est possible
+                    self.cases[position_cible] = self.cases[position_source]  # modifie le damier
+                    return "ok"
+            else:
+                if self.cases[position_source].couleur == "blanc":  # cas si piece est blanche
+                    if position_cible in position_source.positions_diagonales_haut():
+                        self.cases[position_cible] = self.cases[position_source]
+                        self.cases.pop(position_source)
+                        if position_cible.ligne == 0:
+                            self.cases[position_cible].promouvoir()
+                        return "ok"
+                else:                                               # cas si piece est noire
+                    if position_cible in position_source.positions_diagonales_bas():
+                        self.cases[position_cible] = self.cases[position_source]
+                        self.cases.pop(position_source)
+                        if position_cible.ligne == 7:
+                            self.cases[position_cible].promouvoir()
+                        return "ok"
+        return "erreur"
+
+
+
+
 
     def __repr__(self):
         """Cette méthode spéciale permet de modifier le comportement d'une instance de la classe Damier pour
@@ -543,6 +583,14 @@ if __name__ == "__main__":
     damier_vide.cases.pop(Position(4, 4))
     damier_vide.cases.pop(Position(3, 3))
 
+    # test piece_de_couleur_peut_se_deplacer
+    assert un_damier.piece_de_couleur_peut_se_deplacer("noir") is True
+    assert un_damier.piece_de_couleur_peut_se_deplacer("blanc") is True
+    damier_vide.cases[Position(2,0)] = Piece("noir", "pion")
+    damier_vide.cases[Position(2, 2)] = Piece("noir", "pion")
+    damier_vide.cases[Position(3, 1)] = Piece("blanc", "pion")
+    assert damier_vide.piece_de_couleur_peut_se_deplacer("blanc") is False
+
     # Teste piece_de_couleur_peut_faire_une_prise
     assert not un_damier.piece_de_couleur_peut_faire_une_prise("noir")
     assert not un_damier.piece_de_couleur_peut_faire_une_prise("blanc")
@@ -550,11 +598,21 @@ if __name__ == "__main__":
     assert damier_teste_kim.piece_de_couleur_peut_faire_une_prise("blanc")
     assert not damier_teste_kim.piece_de_couleur_peut_faire_une_prise("noir")
 
+    # tests deplacer()
+    assert damier_teste_kim.deplacer(Position(5,0), Position(3,2)) == "prise"
+    assert damier_teste_kim.deplacer(Position(2,5), Position(3,4)) == "ok"
+    damier_vide.cases[Position(6,0)] = Piece("noir","pion")
+    assert damier_vide.deplacer(Position(6,0), Position(7,1)) == "ok"
+    assert damier_vide.cases[Position(7,1)].type_de_piece == "dame"
+    assert damier_vide.deplacer(Position(1,3), Position(2,4)) == "erreur"
+    assert damier_teste_kim.deplacer(Position(4,1), Position(3,1)) == "erreur"
+
+
     print('Test unitaires passés avec succès!')
 
     # NOTEZ BIEN: Pour vous aider lors du développement, affichez le damier!
-    print(un_damier)
-    print(damier_teste_kim)
-    print(damier_test)
-    print(damier_vide)
+    print("damier de base\n",un_damier)
+    print("damier Kim\n",damier_teste_kim)
+    print("damier Mathieu\n",damier_test)
+    print("damier Vide\n",damier_vide)
 
