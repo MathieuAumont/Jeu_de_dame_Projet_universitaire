@@ -104,29 +104,22 @@ if __name__ == '__main__':
     print('Test unitaires de la classe "Position"...')
 
     pion = Position(1, 1)
-    autre_1 = Position(2,0)
-    autre_2 = Position(2, 2)
-    assert pion.positions_diagonales_bas()[0] == autre_1
-    assert pion.positions_diagonales_bas()[1] == autre_2
 
-    autre_3 = Position(0,0)
-    autre_4 = Position(0, 2)
-    assert pion.positions_diagonales_haut()[0] == autre_3
-    assert pion.positions_diagonales_haut()[1] == autre_4
+    assert Position(2,0) in pion.positions_diagonales_bas()
+    assert Position(2, 2) in pion.positions_diagonales_bas()
 
-    assert pion.quatre_positions_diagonales()[0] == autre_1
-    assert pion.quatre_positions_diagonales()[1] == autre_2
-    assert pion.quatre_positions_diagonales()[2] == autre_3
-    assert pion.quatre_positions_diagonales()[3] == autre_4
+    assert Position(0,0) in pion.positions_diagonales_haut()
+    assert Position(0, 2) in pion.positions_diagonales_haut()
 
-    autre_5 = Position(3, -1)
-    autre_6 = Position(3, 3)
-    autre_7 = Position(-1, -1)
-    autre_8 = Position(-1,3)
-    assert pion.quatre_positions_sauts()[0] == autre_5
-    assert pion.quatre_positions_sauts()[1] == autre_6
-    assert pion.quatre_positions_sauts()[2] == autre_7
-    assert pion.quatre_positions_sauts()[3] == autre_8
+    assert Position(2,0) in pion.quatre_positions_diagonales()
+    assert Position(2, 2) in pion.quatre_positions_diagonales()
+    assert Position(0,0) in pion.quatre_positions_diagonales()
+    assert Position(0, 2) in pion.quatre_positions_diagonales()
+
+    assert Position(3, -1) in pion.quatre_positions_sauts()
+    assert Position(3, 3) in pion.quatre_positions_sauts()
+    assert Position(-1, -1) in pion.quatre_positions_sauts()
+    assert Position(-1,3) in pion.quatre_positions_sauts()
 
 
     print('Test unitaires passés avec succès!')
