@@ -176,19 +176,21 @@ class Damier:
         if position_piece not in self.cases:
             return False
 
-        if self.recuperer_piece_a_position(position_piece).type_de_piece == "dame":
-            for cas in position_piece.quatre_positions_diagonales():
-                if cas not in self.cases and self.position_est_dans_damier(cas):
+        piece = self.recuperer_piece_a_position(position_piece)
+
+        if piece.type_de_piece == "dame":
+            for position in position_piece.quatre_positions_diagonales():
+                if position not in self.cases and self.position_est_dans_damier(position):
                     return True
 
-        elif self.recuperer_piece_a_position(position_piece).couleur == "noir":
-            for cas in position_piece.positions_diagonales_bas():
-                if cas not in self.cases and self.position_est_dans_damier(cas):
+        elif piece.couleur == "noir":
+            for position in position_piece.positions_diagonales_bas():
+                if position not in self.cases and self.position_est_dans_damier(position):
                     return True
 
-        elif self.recuperer_piece_a_position(position_piece).couleur == "blanc":
-            for cas in position_piece.positions_diagonales_haut():
-                if cas not in self.cases and self.position_est_dans_damier(cas):
+        else:
+            for position in position_piece.positions_diagonales_haut():
+                if position not in self.cases and self.position_est_dans_damier(position):
                     return True
 
         return False
@@ -210,6 +212,10 @@ class Damier:
         if self.recuperer_piece_a_position(
                 position_piece) is None:  # cas où à la position initiale il n'y a pas de piece
             return False
+
+        # for position in position_piece.quatre_positions_sauts():
+        #     if self.piece_peut_sauter_vers(position_piece, position):
+        #         return True
 
         piece_qui_deplace = self.recuperer_piece_a_position(position_piece)
 
