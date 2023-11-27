@@ -114,16 +114,11 @@ class Damier:
 
         if piece_qui_deplace.type_de_piece == "pion":
             if piece_qui_deplace.couleur == "noir":
-                return position_piece.positions_diagonales_bas()[0] == position_cible or \
-                    position_piece.positions_diagonales_bas()[1] == position_cible
+                return position_cible in position_piece.positions_diagonales_bas()
             else:  # alors elle est blanche
-                return position_piece.positions_diagonales_haut()[0] == position_cible or \
-                    position_piece.positions_diagonales_haut()[1] == position_cible
+                return position_cible in position_piece.positions_diagonales_haut()
         else:  # alors elle est de type dame
-            return position_piece.quatre_positions_diagonales()[0] == position_cible or \
-                position_piece.quatre_positions_diagonales()[1] == position_cible or \
-                position_piece.quatre_positions_diagonales()[2] == position_cible or \
-                position_piece.quatre_positions_diagonales()[3] == position_cible
+            return position_cible  in position_piece.quatre_positions_diagonales()
 
     def piece_peut_sauter_vers(self, position_piece, position_cible):
         """Cette méthode détermine si une pièce (à la position reçue) peut sauter vers une certaine position cible.
