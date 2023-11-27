@@ -118,7 +118,7 @@ class Damier:
             else:  # alors elle est blanche
                 return position_cible in position_piece.positions_diagonales_haut()
         else:  # alors elle est de type dame
-            return position_cible  in position_piece.quatre_positions_diagonales()
+            return position_cible in position_piece.quatre_positions_diagonales()
 
     def piece_peut_sauter_vers(self, position_piece, position_cible):
         """Cette méthode détermine si une pièce (à la position reçue) peut sauter vers une certaine position cible.
@@ -138,6 +138,9 @@ class Damier:
             bool: True si la pièce peut sauter vers la position cible, False autrement.
 
         """
+        # cas les deux positions ne sont pas dans le damier
+        if not self.position_est_dans_damier(position_piece) or not self.position_est_dans_damier(position_cible):
+            return False
         if (position_piece not in self.cases or position_cible in self.cases or  # Cas d'erreur de position
                 position_cible not in position_piece.quatre_positions_sauts()):
             return False
