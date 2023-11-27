@@ -212,7 +212,7 @@ class Damier:
             return False
 
         for position in position_piece.quatre_positions_sauts():
-            if self.piece_peut_sauter_vers(position_piece, position) and self.position_est_dans_damier(position):
+            if self.piece_peut_sauter_vers(position_piece, position):
                 return True
         return False  # si t'es arriver ici, il n'y a aucune piece à manger
 
