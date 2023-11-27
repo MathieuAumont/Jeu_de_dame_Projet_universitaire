@@ -337,6 +337,7 @@ class Damier:
             if self.cases[position_source].type_de_piece == "dame":  # cas si piece est dame
                 if position_cible in position_source.quatre_positions_diagonales():  #verifie si position cible est possible
                     self.cases[position_cible] = self.cases[position_source]  # modifie le damier
+                    self.cases.pop(position_source)
                     return "ok"
             else:
                 if self.cases[position_source].couleur == "blanc":  # cas si piece est blanche
@@ -354,9 +355,6 @@ class Damier:
                             self.cases[position_cible].promouvoir()
                         return "ok"
         return "erreur"
-
-
-
 
 
     def __repr__(self):
