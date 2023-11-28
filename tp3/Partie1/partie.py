@@ -90,7 +90,24 @@ class Partie:
                 a pas d'erreur).
 
         """
-        #TODO: À compléter
+
+        # cas de prise
+        # if self.damier.piece_peut_faire_une_prise(self.position_source_selectionnee): # est-ce qu'il y a prise ?
+        #     if self.damier.piece_peut_sauter_vers(self.position_source_selectionnee,position_cible): # cible fait-elle partie des choix de prise
+        #         return True, ""
+        #     else:
+        #         if not self.damier.position_est_dans_damier(position_cible): # cible dans le damier
+        #             return False, "La position cible choisi n'est pas dans le damier."
+        #         elif position_cible in self.damier.cases(): # cible déjà occupée
+        #             return (False, "Cette case est déjà occupée par un.e {}"
+        #                     .format(self.damier.cases[position_cible].type_de_piece))
+        #
+        # if self.damier.cases[self.position_source_selectionnee].type_de_piece == "dame":
+
+
+
+
+
 
     def demander_positions_deplacement(self):
         """Demande à l'utilisateur les positions sources et cible, et valide ces positions. Cette méthode doit demander
