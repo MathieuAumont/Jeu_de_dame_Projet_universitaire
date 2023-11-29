@@ -278,12 +278,13 @@ class Damier:
         if not self.position_est_dans_damier(position_source) or not self.position_est_dans_damier(position_cible):
             return "erreur"
 
-        if self.piece_peut_faire_une_prise(position_source):  #déterminer si la pièce source peut faire une prise
-            position_centre = None
-            for position in position_source.quatre_positions_diagonales():  # Trouver case commune entre les positions
-                if position in position_cible.quatre_positions_diagonales():
-                    position_centre = position
-            if position_cible in position_source.quatre_positions_sauts(): #vérifie si position cible est valide avec une prise
+        if self.piece_de_couleur_peut_faire_une_prise(self.cases[position_source].couleur):
+            #déterminer si la pièce source peut faire une prise
+            if self.piece_peut_sauter_vers(position_source,position_cible):
+                position_centre = None
+                for position in position_source.quatre_positions_diagonales():  # Trouver case commune entre les positions
+                    if position in position_cible.quatre_positions_diagonales():
+                        position_centre = position
                 self.cases[position_cible] = self.cases[position_source]  # modifie le damier avec le déplacement
                 self.cases.pop(position_centre)
                 self.cases.pop(position_source)  # retirer la position source, car celle-ci déplacer
@@ -294,29 +295,15 @@ class Damier:
                     if position_cible.ligne == 7:
                         self.cases[position_cible].promouvoir()
                 return "prise"
+            return "erreur"
 
-        elif self.piece_peut_se_deplacer(position_source):  # détermine si la pièce peut se déplacer
-            if self.cases[position_source].type_de_piece == "dame":  # cas si piece est dame
-                if position_cible in position_source.quatre_positions_diagonales():  #verifie si position cible est possible
-                    self.cases[position_cible] = self.cases[position_source]  # modifie le damier
-                    self.cases.pop(position_source)
-                    return "ok"
-            else:
-                if self.cases[position_source].couleur == "blanc":  # cas si piece est blanche
-                    if position_cible in position_source.positions_diagonales_haut():
-                        self.cases[position_cible] = self.cases[position_source]
-                        self.cases.pop(position_source)
-                        if position_cible.ligne == 0:
-                            self.cases[position_cible].promouvoir()
-                        return "ok"
-                else:                                               # cas si piece est noire
-                    if position_cible in position_source.positions_diagonales_bas():
-                        self.cases[position_cible] = self.cases[position_source]
-                        self.cases.pop(position_source)
-                        if position_cible.ligne == 7:
-                            self.cases[position_cible].promouvoir()
-                        return "ok"
-        return "erreur"
+        elif self.piece_peut_se_deplacer_vers(position_source,position_cible):  # détermine si la pièce peut se déplacer
+            self.cases[position_cible] = self.cases[position_source]  # modifie le damier
+            self.cases.pop(position_source)
+            return "ok"
+
+        else:
+            return "erreur"
 
 
     def __repr__(self):
