@@ -576,3 +576,9 @@ if __name__ == "__main__":
     print("damier Mathieu\n",damier_test)
     print("damier Vide\n",damier_vide)
 
+
+
+
+
+
+

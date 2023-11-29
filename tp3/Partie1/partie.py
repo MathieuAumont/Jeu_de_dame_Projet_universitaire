@@ -91,23 +91,28 @@ class Partie:
 
         """
 
+        if not self.damier.position_est_dans_damier(position_cible):  # cible dans le damier
+            return False, "La position cible choisi n'est pas dans le damier."
+        elif position_cible in self.damier.cases:  # cible déjà occupée
+            return (False, "Cette case est déjà occupée par un.e {}."
+                    .format(self.damier.cases[position_cible].type_de_piece))
+
         # cas de prise
-        # if self.damier.piece_peut_faire_une_prise(self.position_source_selectionnee): # est-ce qu'il y a prise ?
-        #     if self.damier.piece_peut_sauter_vers(self.position_source_selectionnee,position_cible): # cible fait-elle partie des choix de prise
-        #         return True, ""
-        #     else:
-        #         if not self.damier.position_est_dans_damier(position_cible): # cible dans le damier
-        #             return False, "La position cible choisi n'est pas dans le damier."
-        #         elif position_cible in self.damier.cases(): # cible déjà occupée
-        #             return (False, "Cette case est déjà occupée par un.e {}"
-        #                     .format(self.damier.cases[position_cible].type_de_piece))
-        #
-        # if self.damier.cases[self.position_source_selectionnee].type_de_piece == "dame":
-
-
-
-
-
+        if self.damier.piece_peut_faire_une_prise(self.position_source_selectionnee): # est-ce qu'il y a prise ?
+            # cible fait-elle partie des choix de prise?
+            if self.damier.piece_peut_sauter_vers(self.position_source_selectionnee, position_cible):
+                return True, ""
+            else:
+                # Le choix ne fait pas partie des prises.
+                return False, "Votre choix n'est pas une prise possible. Veuillez choisir une prise."
+        # case de déplacement
+        elif self.damier.piece_peut_se_deplacer(self.position_source_selectionnee):
+            # cible fait-elle partie des choix de déplacement ?
+            if self.damier.piece_peut_se_deplacer_vers(self.position_source_selectionnee, position_cible):
+                return True,""
+            else:
+                # Le choix ne fait pas partie des déplacements possibles.
+                return False, "Vous ne pouvez vous déplacer à cette endroit."
 
     def demander_positions_deplacement(self):
         """Demande à l'utilisateur les positions sources et cible, et valide ces positions. Cette méthode doit demander
@@ -151,6 +156,7 @@ class Partie:
         # Il n'y aura pas le probleme mentionner,
         # parce qu'il ne sortira jamais du "while" sans avoir de position source et cible valide
         return (position_source_selectionnee, position_cible_selectionnee)
+    
 
 
 
@@ -186,13 +192,25 @@ class Partie:
             print("")
 
         # Demander les positions
-        # TODO: À compléter
+        position_source, position_cible = self.demander_positions_deplacement()
 
         # Effectuer le déplacement (à l'aide de la méthode du damier appropriée)
-        # TODO: À compléter
+        while self.damier.deplacer(position_source, position_cible) == "erreur":
+            position_source, position_cible = self.demander_positions_deplacement()
 
         # Mettre à jour les attributs de la classe
-        # TODO: À compléter
+        if self.damier.piece_peut_faire_une_prise(position_cible):
+            self.doit_prendre = True
+            self.position_source_forcee = position_cible
+            self.position_source_selectionnee = self.position_source_forcee
+        else:
+            if self.couleur_joueur_courant == "blanc":
+                self.couleur_joueur_courant = "noir"
+            else:
+                self.couleur_joueur_courant = "blanc"
+            self.doit_prendre = False
+            self.position_source_selectionnee = None
+            self.position_source_forcee = None
 
     def jouer(self):
         """Démarre une partie. Tant que le joueur courant a des déplacements possibles (utilisez les méthodes
@@ -229,3 +247,6 @@ if __name__ == "__main__":
     essaie_partie.damier.cases.pop(Position(4, 3))
     print(essaie_partie.demander_positions_deplacement())
     print("assert réussit")
+
+
+
