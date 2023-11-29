@@ -124,41 +124,62 @@ class Partie:
             Position, Position: Un couple de deux positions (source et cible).
 
         """
+
+        position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
+        while position_source_ligne > 7 or position_source_ligne < 0:
+            position_source_ligne = int(input("Position invalide.\nVeuillez entrer votre position source(ligne) : "))
+        position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
+        while position_source_colonne > 7 or position_source_colonne < 0:
+            position_source_colonne = int(input("Position invalide.\nVeuillez entrer votre position source(colonne) : "))
+
+        position_source_selectionnee = Position(position_source_ligne,position_source_colonne)
+        # coder validation de la position sans planter le programme
+
+        position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
+        while position_cible_ligne > 7 or position_cible_ligne < 0:
+            position_cible_ligne = int(input("Position invalide.\nVeuillez entrer votre position cible (ligne) : "))
+        position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
+        while position_cible_colonne > 7 or position_source_colonne < 0:
+            position_cible_colonne = int(input("Position invalide.\nVeuillez entrer votre position cible (colonne) : "))
+
+        position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
+        # coder validation de la position sans planter le programme
+
+        return position_source_selectionnee, position_cible_selectionnee
+
+
         # ON NE SAIT PAS COMMENT S'OCCUPPER DES CAS D'EXEPTION ENCORE, IL VA FALLOIR Y RETOURNER
         # J'AGIS COMME SI CE N'EST QUE DES ENTIERS QU'IL VONT RENTRER
-        position_source_ligne = ""
-        position_source_colone = ""
-        position_cible_ligne = ""
-        position_cible_colone = ""
-
-        while position_source_ligne == "" and position_source_colone == "" and position_cible_ligne == "" and position_cible_colone == "":
-            position_source_ligne = int(input("Veuillez entrer votre position source (ligne) : "))
-            position_source_colone = int(input("Veuillez entrer votre position source (colone) : "))
-            position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
-            position_cible_colone = int(input("Veuillez entrer votre position cible (colone) : "))
-            position_source_selectionnee = Position(position_source_ligne, position_source_colone)
-            position_cible_selectionnee = Position(position_cible_ligne, position_cible_colone)
-
-            if not self.position_source_valide(position_source_selectionnee)[0]:
-                print("Votre position source est invalide car: ", self.position_source_valide(position_source_selectionnee)[1])
-                position_source_ligne = ""
-                position_source_colone = ""
-                position_cible_ligne = ""
-                position_cible_colone = ""
-
-            # position_cible_valide pas encore écrit au moment de l'écriture
-            elif not self.position_cible_valide(position_cible_selectionnee)[0]:
-                print("Votre position source est invalide car: ", self.position_cible_valide(position_cible_selectionnee)[1])
-                position_source_ligne = ""
-                position_source_colone = ""
-                position_cible_ligne = ""
-                position_cible_colone = ""
-        # Il n'y aura pas le probleme mentionner,
-        # parce qu'il ne sortira jamais du "while" sans avoir de position source et cible valide
-        return (position_source_selectionnee, position_cible_selectionnee)
-    
-
-
+        # position_source_ligne = ""
+        # position_source_colone = ""
+        # position_cible_ligne = ""
+        # position_cible_colone = ""
+        #
+        # while position_source_ligne == "" and position_source_colone == "" and position_cible_ligne == "" and position_cible_colone == "":
+        #     position_source_ligne = int(input("Veuillez entrer votre position source (ligne) : "))
+        #     position_source_colone = int(input("Veuillez entrer votre position source (colone) : "))
+        #     position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
+        #     position_cible_colone = int(input("Veuillez entrer votre position cible (colone) : "))
+        #     position_source_selectionnee = Position(position_source_ligne, position_source_colone)
+        #     position_cible_selectionnee = Position(position_cible_ligne, position_cible_colone)
+        #
+        #     if not self.position_source_valide(position_source_selectionnee)[0]:
+        #         print("Votre position source est invalide car: ", self.position_source_valide(position_source_selectionnee)[1])
+        #         position_source_ligne = ""
+        #         position_source_colone = ""
+        #         position_cible_ligne = ""
+        #         position_cible_colone = ""
+        #
+        #     # position_cible_valide pas encore écrit au moment de l'écriture
+        #     elif not self.position_cible_valide(position_cible_selectionnee)[0]:
+        #         print("Votre position source est invalide car: ", self.position_cible_valide(position_cible_selectionnee)[1])
+        #         position_source_ligne = ""
+        #         position_source_colone = ""
+        #         position_cible_ligne = ""
+        #         position_cible_colone = ""
+        # # Il n'y aura pas le probleme mentionner,
+        # # parce qu'il ne sortira jamais du "while" sans avoir de position source et cible valide
+        # return (position_source_selectionnee, position_cible_selectionnee)
 
 
     def tour(self):
@@ -195,22 +216,23 @@ class Partie:
         position_source, position_cible = self.demander_positions_deplacement()
 
         # Effectuer le déplacement (à l'aide de la méthode du damier appropriée)
+        deplacement = self.damier.piece_peut_se_deplacer_vers(position_source,position_cible)
+
         while self.damier.deplacer(position_source, position_cible) == "erreur":
+            print("Erreur de déplacement.\nRecommencez.")
             position_source, position_cible = self.demander_positions_deplacement()
 
         # Mettre à jour les attributs de la classe
-        if self.damier.piece_peut_faire_une_prise(position_cible):
-            self.doit_prendre = True
-            self.position_source_forcee = position_cible
-            self.position_source_selectionnee = self.position_source_forcee
-        else:
-            if self.couleur_joueur_courant == "blanc":
-                self.couleur_joueur_courant = "noir"
-            else:
+        if deplacement:
+            if self.couleur_joueur_courant == "noir":
                 self.couleur_joueur_courant = "blanc"
-            self.doit_prendre = False
-            self.position_source_selectionnee = None
-            self.position_source_forcee = None
+            else:
+                self.couleur_joueur_courant = "noir"
+        else:
+            if self.damier.piece_peut_faire_une_prise(position_cible):
+                self.position_source_forcee = position_cible
+                self.position_source_selectionnee = self.position_source_forcee
+
 
     def jouer(self):
         """Démarre une partie. Tant que le joueur courant a des déplacements possibles (utilisez les méthodes

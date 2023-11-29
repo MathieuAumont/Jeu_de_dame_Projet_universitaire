@@ -279,8 +279,13 @@ class Damier:
             return "erreur"
 
         if self.piece_peut_faire_une_prise(position_source):  #déterminer si la pièce source peut faire une prise
+            position_centre = None
+            for position in position_source.quatre_positions_diagonales():  # Trouver case commune entre les positions
+                if position in position_cible.quatre_positions_diagonales():
+                    position_centre = position
             if position_cible in position_source.quatre_positions_sauts(): #vérifie si position cible est valide avec une prise
                 self.cases[position_cible] = self.cases[position_source]  # modifie le damier avec le déplacement
+                self.cases.pop(position_centre)
                 self.cases.pop(position_source)  # retirer la position source, car celle-ci déplacer
                 if self.cases[position_cible].couleur == "blanc":  #vérifie s'il y a cas de promotion chez les blancs
                     if position_cible.ligne == 0:
