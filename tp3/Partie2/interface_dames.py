@@ -90,4 +90,42 @@ class FenetrePartie(Tk):
                     self.messages["foreground"] = "red"
                     self.messages["text"] = "Déplacement impossible."
 
+    def deplacer_piece(self,position_source, position_cible):
+        """Méthode qui permet de déplacer la piece si le return est vrai et si le return est False, dit au
+        joueur de changer de piece.
+
+        :param position_source: (Position) la position de la piece
+        :param position_cible: (Position) la position à l'arriver de la piece
+        :return: (tuple) pour le premier élément, vrai si le déplacement est fait, faux s'il est impossible
+        """
+
+        if self.partie.damier.deplacer(position_source, position_cible) == "ok":
+            self.partie.damier[position_cible] = self.partie.damier.pop(position_source)
+            self.partie.damier.pop(position_source)
+            # update le canvas pour avoir le nouveau dictionnaire
+        elif self.partie.damier.deplacer(position_source, position_cible) == "prise":
+            self.partie.damier[position_cible] = self.partie.damier.pop(position_source)
+            self.partie.damier.pop(position_source)
+            # comment faire position centre ?
+            difference_ligne = position_cible.ligne - position_source.ligne
+            difference_colone = position_cible.colone - position_source.colone
+            if difference_ligne == 2:
+                ligne = position_source.ligne + 1
+            else:
+                ligne = position_source.ligne - 1
+            if difference_colone == 2:
+                colone = position_source.colone + 1
+            else:
+                colone = position_source.colone - 1
+            position_centre = Position(ligne, colone)
+            self.partie.damier.pop(position_centre)
+            # update canvas
+
+        else:
+            return False, "Veuillez choisir un nouveau déplacement"
+
+
+
+
+
 
