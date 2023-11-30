@@ -12,18 +12,16 @@ partie 2 répartition des tâches:
 
 PERSONNE 1:
 Les pièces peuvent être déplacées sur le damier
-On peut choisir une nouvelle pièce source après un mouvement
-invalide
+On peut choisir une nouvelle pièce source après un mouvement invalide
 Les prises multiples sont gérées correctement
 On peut créer une nouvelle partie
 Une rétroaction est donnée à l’utilisateur (messages)
 
 PERSONNE 2:
-Les déplacements invalides ne sont pas acceptés
+Les déplacements invalides ne sont pas acceptés FAIT
 Si une prise est possible, elle est obligatoire
 Le tour des joueurs est alterné correctement
 On peut quitter le jeu
-Affiche la couleur du joueur qui doit faire un déplacement
-(tour courant)
+Affiche la couleur du joueur qui doit faire un déplacement (tour courant)
 
 ...

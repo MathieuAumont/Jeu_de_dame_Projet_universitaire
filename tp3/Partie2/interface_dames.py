@@ -67,6 +67,27 @@ class FenetrePartie(Tk):
             self.messages['foreground'] = 'black'
             self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format( position)
 
-        # TODO: À continuer....
+    def deplacement_invalide(self,position_source, position_cible):
+        """ Méthode informant le joueur que son déplacement est invalide.
+
+        :param position_source: (Position) : Position de la pièce de départ du joueur.
+        :param position_cible: (Position) : Position ciblée par le joueur
+        :return: (bool) : True si déplacement invalide. False si autrement.
+
+        """
+        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
+            if self.partie.damier.piece_peut_sauter_vers(position_source,position_cible):
+                return False
+            else:
+                self.messages['foreground'] = "red"
+                self.messages['text'] = "Déplacement impossible. Prise possible."
+                return True
+        else:
+            if self.partie.damier.piece_de_couleur_peut_se_deplacer(self.partie.couleur_joueur_courant):
+                if self.partie.damier.piece_peut_se_deplacer_vers(position_source, position_cible):
+                    return False
+                else:
+                    self.messages["foreground"] = "red"
+                    self.messages["text"] = "Déplacement impossible."
 
 
