@@ -1,4 +1,4 @@
-# Auteurs: Équipe IFT-1004
+ # Auteurs: Équipe IFT-1004
 
 from tkinter import Tk, Canvas
 from tp3.Partie1.position import Position
