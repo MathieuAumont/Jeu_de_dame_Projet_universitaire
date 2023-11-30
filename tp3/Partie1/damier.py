@@ -1,4 +1,4 @@
-# Auteurs: Kim et Mathieu
+# Auteurs: Kim vaillancourt et Mathieu Aumont
 
 from tp3.Partie1.piece import Piece
 from tp3.Partie1.position import Position
@@ -171,22 +171,22 @@ class Damier:
             bool: True si une pièce est à la position reçue et celle-ci peut se déplacer, False autrement.
 
         """
-        if position_piece not in self.cases:
+        if position_piece not in self.cases:  # si il n'y a pas de pièce dans la case
             return False
 
-        piece = self.recuperer_piece_a_position(position_piece)
+        piece = self.recuperer_piece_a_position(position_piece) # création d'une variable pièce pour alléger le code
 
-        if piece.type_de_piece == "dame":
+        if piece.type_de_piece == "dame":  # cas de déplacement de type dame
             for position in position_piece.quatre_positions_diagonales():
                 if position not in self.cases and self.position_est_dans_damier(position):
                     return True
 
-        elif piece.couleur == "noir":
+        elif piece.couleur == "noir":  # cas de déplacement de type pion de couleur noir
             for position in position_piece.positions_diagonales_bas():
                 if position not in self.cases and self.position_est_dans_damier(position):
                     return True
 
-        else:
+        else:  #cas de déplacement de type pion de couleur blanc
             for position in position_piece.positions_diagonales_haut():
                 if position not in self.cases and self.position_est_dans_damier(position):
                     return True

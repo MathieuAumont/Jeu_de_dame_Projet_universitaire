@@ -1,4 +1,4 @@
-# Auteurs: Kim et Mathieu
+# Auteurs: Kim vaillancourt et Mathieu Aumont
 
 from tp3.Partie1.damier import Damier
 from tp3.Partie1.position import Position
@@ -124,18 +124,21 @@ class Partie:
             Position, Position: Un couple de deux positions (source et cible).
 
         """
-
+        # demander pour position source
         position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
         position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
         self.position_source_selectionnee = Position(position_source_ligne,position_source_colonne)
+        # tant que position est invalide, redemander
         while not self.position_source_valide(self.position_source_selectionnee)[0]:
             position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
             position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
             self.position_source_selectionnee = Position(position_source_ligne, position_source_colonne)
 
+        # demander pour position cible
         position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
         position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
         position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
+        #tant que position est invalide, redemander
         while not self.position_cible_valide(position_cible_selectionnee)[0]:
             position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
             position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
@@ -212,28 +215,36 @@ class Partie:
         position_source, position_cible = self.demander_positions_deplacement()
 
         # Effectuer le déplacement (à l'aide de la méthode du damier appropriée)
+          # variable qui retourne True si il n'y a pas de déplacement avec prise.
         pas_de_prise = self.damier.piece_peut_se_deplacer_vers(position_source,position_cible)
 
+        # tant qu'il y a une erreur de déplacement, on retourne demander les positions
         while self.damier.deplacer(position_source, position_cible) == "erreur":
             print("Erreur de déplacement.\nRecommencez.")
             position_source, position_cible = self.demander_positions_deplacement()
             pas_de_prise = self.damier.piece_peut_se_deplacer_vers(position_source, position_cible)
 
         # Mettre à jour les attributs de la classe
+        # cas de déplacement sans prise
         if pas_de_prise:
+            # Changer de jouer courant
             if self.couleur_joueur_courant == "noir":
                 self.couleur_joueur_courant = "blanc"
             else:
                 self.couleur_joueur_courant = "noir"
+        # cas de déplacement avec prise
         else:
+            # ne changer pas de joueur courant
             if self.damier.piece_peut_faire_une_prise(position_cible):
-                self.position_source_forcee = position_cible
+                self.position_source_forcee = position_cible  # forcer la position à selectionner
                 self.position_source_selectionnee = self.position_source_forcee
             else:
+                # changer de jouer courant
                 if self.couleur_joueur_courant == "noir":
                     self.couleur_joueur_courant = "blanc"
                 else:
                     self.couleur_joueur_courant = "noir"
+                # remettre les valeurs par défaut du damier
                 self.doit_prendre = False
                 self.position_source_forcee = None
 

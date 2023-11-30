@@ -1,4 +1,4 @@
-# Auteurs: À compléter
+# Auteurs: Kim Vaillancourt et Mathieu Aumont
 
 
 class Position:
