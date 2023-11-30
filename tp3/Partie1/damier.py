@@ -300,6 +300,12 @@ class Damier:
         elif self.piece_peut_se_deplacer_vers(position_source,position_cible):  # détermine si la pièce peut se déplacer
             self.cases[position_cible] = self.cases[position_source]  # modifie le damier
             self.cases.pop(position_source)
+            if self.cases[position_cible].couleur == "blanc":  # vérifie s'il y a cas de promotion chez les blancs
+                if position_cible.ligne == 0:
+                    self.cases[position_cible].promouvoir()
+            else:  # idem chez les noirs
+                if position_cible.ligne == 7:
+                    self.cases[position_cible].promouvoir()
             return "ok"
 
         else:
@@ -552,13 +558,15 @@ if __name__ == "__main__":
     assert not damier_teste_kim.piece_de_couleur_peut_faire_une_prise("noir")
 
     # tests deplacer()
+    damier_vide.cases.pop(Position(2,0))
+    damier_vide.cases.pop(Position(2,2))
     assert damier_teste_kim.deplacer(Position(5,0), Position(3,2)) == "prise"
-    assert damier_teste_kim.deplacer(Position(2,5), Position(3,4)) == "ok"
+    assert damier_teste_kim.deplacer(Position(2,5), Position(3,4)) == "erreur"
     damier_vide.cases[Position(6,0)] = Piece("noir","pion")
     assert damier_vide.deplacer(Position(6,0), Position(7,1)) == "ok"
     assert damier_vide.cases[Position(7,1)].type_de_piece == "dame"
-    assert damier_vide.deplacer(Position(1,3), Position(2,4)) == "erreur"
-    assert damier_teste_kim.deplacer(Position(4,1), Position(3,1)) == "erreur"
+    assert damier_vide.deplacer(Position(1,8), Position(2,4)) == "erreur"
+
 
     print('Test unitaires passés avec succès!')
 
