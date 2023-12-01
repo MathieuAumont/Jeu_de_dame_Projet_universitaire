@@ -34,6 +34,7 @@ class FenetrePartie(Tk):
         self.canvas_damier = CanvasDamier(self, self.partie.damier, 60)
         self.canvas_damier.grid(sticky=NSEW)
         self.canvas_damier.bind('<Button-1>', self.selectionner)
+        self.position_cible = None
 
 
         # Ajout d'une étiquette d'information.
@@ -75,33 +76,28 @@ class FenetrePartie(Tk):
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
         if piece is None:
-            self.messages['foreground'] = 'red'
-            self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
+            if self.partie.position_source_selectionnee is not None:
+                self.position_cible = position
+                if self.deplacement_invalide(self.position_cible):
+                    self.canvas_damier.actualiser()
+                    self.messages['foreground'] = 'black'
+                    self.messages['text'] = 'Déplacement accepté'
+                else:
+                    self.messages['foreground'] = "red"
+                    self.messages['text'] = "Erreur. Déplacement impossible"
+            else:
+                self.messages['foreground'] = 'red'
+                self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
         elif piece.couleur != self.partie.couleur_joueur_courant:
             self.messages['foreground'] = 'red'
             self.messages['text'] = "Erreur: pièce de l'adversaire."
         else:
-            self.partie.position_source_selectionnee = position
-            self.messages['foreground'] = 'black'
-            self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
-
-
-
-
-
-
-
-    def demander_deplacement(self,event):
-        """ méthode enregistrant le déplacement demander par le joueur
-
-        :return:
-        """
-        ligne = event.y // self.canvas_damier.n_pixels_par_case
-        colonne = event.x // self.canvas_damier.n_pixels_par_case
-        position_cible = Position(ligne, colonne)
-
-
-
+            if self.partie.position_source_selectionnee is None:
+                self.partie.position_source_selectionnee = position
+                self.messages['foreground'] = 'black'
+                self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
+            else:
+                self.position_cible = position
 
 
     def deplacement_invalide(self,position_cible):
@@ -112,8 +108,10 @@ class FenetrePartie(Tk):
         :return: (bool) : True si déplacement invalide. False si autrement.
 
         """
-        if self.partie.position_cible_valide(self.demander_deplacement())[0]:
-            return self.deplacer_piece(self.partie.position_source_selectionnee, position_cible)
+        if self.partie.position_cible_valide(position_cible)[0]:
+            return (self.partie.damier.deplacer(self.partie.position_source_selectionnee, position_cible) == "ok" or
+                    self.partie.damier.deplacer(self.partie.position_source_selectionnee, position_cible) == "prise")
+
         else:
             self.messages['foreground'] = "red"
             self.messages['text'] = self.partie.position_cible_valide(position_cible)[1]
