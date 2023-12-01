@@ -33,7 +33,7 @@ class FenetrePartie(Tk):
         # Création du canvas damier.
         self.canvas_damier = CanvasDamier(self, self.partie.damier, 60)
         self.canvas_damier.grid(sticky=NSEW)
-        self.selection_case = self.canvas_damier.bind('<Button-1>', self.selectionner)
+        self.canvas_damier.bind('<Button-1>', self.selectionner)
 
 
 
@@ -49,8 +49,11 @@ class FenetrePartie(Tk):
         self.grid_rowconfigure(0, weight=1)
 
         #démarrer partie
-        self.gagnant = self.jouer()
+        self.mettre_a_jour_affichage()
 
+    def mettre_a_jour_affichage(self):
+        self.messages['text'] = "Tour du joueur {}".format(self.partie.couleur_joueur_courant)
+        self.canvas_damier.actualiser()
 
 
     def selectionner(self, event):
@@ -78,7 +81,7 @@ class FenetrePartie(Tk):
                 self.messages['foreground'] = 'black'
                 self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
 
-        return position
+        return
 
     def demander_deplacement(self,event):
         """ méthode enregistrant le déplacement demander par le joueur
