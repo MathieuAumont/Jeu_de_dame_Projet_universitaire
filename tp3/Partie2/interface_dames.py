@@ -33,7 +33,7 @@ class FenetrePartie(Tk):
         # Création du canvas damier.
         self.canvas_damier = CanvasDamier(self, self.partie.damier, 60)
         self.canvas_damier.grid(sticky=NSEW)
-        self.canvas_damier.bind('<Button-1>', self.selectionner)
+        self.selection_case = self.canvas_damier.bind('<Button-1>', self.selectionner)
 
 
 
@@ -47,6 +47,9 @@ class FenetrePartie(Tk):
         # Truc pour le redimensionnement automatique des éléments de la fenêtre.
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
+        #démarrer partie
+        self.gagnant = self.jouer()
 
 
 
@@ -66,13 +69,15 @@ class FenetrePartie(Tk):
         # On récupère l'information sur la pièce à l'endroit choisi.
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
-        if piece is None:
-            self.messages['foreground'] = 'red'
-            self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
-        else:
+        if self.partie.position_source_selectionnee is None:
+            if piece is None:
+                self.messages['foreground'] = 'red'
+                self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
+            else:
 
-            self.messages['foreground'] = 'black'
-            self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
+                self.messages['foreground'] = 'black'
+                self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
+
         return position
 
     def demander_deplacement(self,event):
@@ -147,6 +152,20 @@ class FenetrePartie(Tk):
         self.messages['foreground'] = "black"
         self.messages['text'] = "Tour du joueur {}.".format(self.partie.couleur_joueur_courant)
 
+        if self.partie.position_source_selectionnee is None:
+            self.partie.position_source_selectionnee = self.selection_case
+            position_cible = self.selection_case
+        else:
+            position_cible = self.selection_case
+
+        while self.partie.damier.deplacer(self.partie.position_source_selectionnee, position_cible) == "erreur":
+            self.messages['foreground']="black"
+            self.messages['text'] = "Erreur de déplacement. Recommencez."
+            if self.partie.position_source_selectionnee is None:
+                self.partie.position_source_selectionnee = self.selection_case
+            else:
+                position_cible = self.selection_case
+
 
     def jouer(self):
         while self.partie.damier.piece_de_couleur_peut_se_deplacer(self.partie.couleur_joueur_courant) or \
@@ -157,6 +176,8 @@ class FenetrePartie(Tk):
             return "noir"
         else:
             return "blanc"
+
+
 
 # if __name__ == '__main__':
 #
