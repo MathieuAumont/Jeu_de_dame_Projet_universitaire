@@ -147,6 +147,7 @@ class FenetrePartie(Tk):
         self.messages['foreground'] = "black"
         self.messages['text'] = "Tour du joueur {}.".format(self.partie.couleur_joueur_courant)
 
+<<<<<<< Updated upstream
     def jouer(self):
         while self.partie.damier.piece_de_couleur_peut_se_deplacer(self.partie.couleur_joueur_courant) or \
                 self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
@@ -164,6 +165,10 @@ class FenetrePartie(Tk):
 #     #
 #     # print(x.partie.damier)
 #     # print(x.deplacer_piece(Position(5, 4), Position(3, 6))) #erreur je sais pas pourquoi
+=======
+#print(x.partie.damier)
+#print(x.deplacer_piece(Position(5, 4), Position(3, 6))) #erreur je sais pas pourquoi
+>>>>>>> Stashed changes
 
 
 
