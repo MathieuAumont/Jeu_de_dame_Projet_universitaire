@@ -36,7 +36,6 @@ class FenetrePartie(Tk):
         self.canvas_damier.bind('<Button-1>', self.selectionner)
 
 
-
         # Ajout d'une étiquette d'information.
         self.messages = Label(self)
         self.messages.grid()
@@ -48,13 +47,15 @@ class FenetrePartie(Tk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        #démarrer partie
-        self.mettre_a_jour_affichage()
+
+    def piece_peut_etre_deplacer(self, position):
 
 
-    def mettre_a_jour_affichage(self):
-        self.messages['text'] = "Tour du joueur {}".format(self.partie.couleur_joueur_courant)
-        self.canvas_damier.actualiser()
+        if self.partie.damier.piece_peut_se_deplacer(position):
+            self.messages['foreground'] = 'black'
+            self.messages['text'] = 'Votre pièce peut se déplacer'
+
+
 
 
     def selectionner(self, event):
@@ -70,20 +71,24 @@ class FenetrePartie(Tk):
         colonne = event.x // self.canvas_damier.n_pixels_par_case
         position = Position(ligne, colonne)
 
-
         # On récupère l'information sur la pièce à l'endroit choisi.
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
-        if self.partie.position_source_selectionnee is None:
-            if piece is None:
-                self.messages['foreground'] = 'red'
-                self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
-            else:
+        if piece is None:
+            self.messages['foreground'] = 'red'
+            self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
+        elif piece.couleur != self.partie.couleur_joueur_courant:
+            self.messages['foreground'] = 'red'
+            self.messages['text'] = "Erreur: pièce de l'adversaire."
+        else:
+            self.partie.position_source_selectionnee = position
+            self.messages['foreground'] = 'black'
+            self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
 
-                self.messages['foreground'] = 'black'
-                self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
-            return
-        self.master.tour(position)
+
+
+
+
 
 
     def demander_deplacement(self,event):
@@ -94,7 +99,7 @@ class FenetrePartie(Tk):
         ligne = event.y // self.canvas_damier.n_pixels_par_case
         colonne = event.x // self.canvas_damier.n_pixels_par_case
         position_cible = Position(ligne, colonne)
-        self.master.tour(position_cible)
+
 
 
 
@@ -152,35 +157,6 @@ class FenetrePartie(Tk):
         else:
             return False, "Veuillez choisir un nouveau déplacement"
 
-    def tour(self,position, position_cible):
-        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
-            self.partie.doit_prendre = True
-
-        self.partie.position_source_selectionnee = position
-
-        if self.partie.position_source_selectionnee is None:
-            self.partie.position_source_selectionnee = self.selectionner
-
-        while self.partie.damier.deplacer(self.partie.position_source_selectionnee, position_cible) == "erreur":
-            self.messages['foreground']="black"
-            self.messages['text'] = "Erreur de déplacement. Recommencez."
-            self.tour(position, position_cible)
-
-
-    def jouer(self):
-        """ Le changement de couleur en s'assurant que lorsqu'une prise est possible, elle doit être fait
-        # DOIT-TON S'ASSURER QUE C'EST LA MÊME PIECE OU QUE N'IMPORTE QUELLE PIECE DU JOUEUR APRÈS AVOIR FAIT UNE PRISE PEUT FAIRE UNE PRISE?
-
-        :return: change la personne qui joue (donc la couleur du joueur)
-        """
-        while self.partie.damier.piece_de_couleur_peut_se_deplacer(self.partie.couleur_joueur_courant) or \
-                self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
-            self.tour()
-
-        if self.partie.couleur_joueur_courant == "blanc":
-            return "noir"
-        else:
-            return "blanc"
 
 
 
