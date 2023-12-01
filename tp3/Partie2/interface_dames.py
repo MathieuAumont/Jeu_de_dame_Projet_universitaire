@@ -51,6 +51,7 @@ class FenetrePartie(Tk):
         #démarrer partie
         self.mettre_a_jour_affichage()
 
+
     def mettre_a_jour_affichage(self):
         self.messages['text'] = "Tour du joueur {}".format(self.partie.couleur_joueur_courant)
         self.canvas_damier.actualiser()
@@ -69,6 +70,7 @@ class FenetrePartie(Tk):
         colonne = event.x // self.canvas_damier.n_pixels_par_case
         position = Position(ligne, colonne)
 
+
         # On récupère l'information sur la pièce à l'endroit choisi.
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
@@ -80,8 +82,9 @@ class FenetrePartie(Tk):
 
                 self.messages['foreground'] = 'black'
                 self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
+            return
+        self.master.tour(position)
 
-        return
 
     def demander_deplacement(self,event):
         """ méthode enregistrant le déplacement demander par le joueur
@@ -90,9 +93,10 @@ class FenetrePartie(Tk):
         """
         ligne = event.y // self.canvas_damier.n_pixels_par_case
         colonne = event.x // self.canvas_damier.n_pixels_par_case
-        position = Position(ligne, colonne)
+        position_cible = Position(ligne, colonne)
+        self.master.tour(position_cible)
 
-        return position
+
 
 
     def deplacement_invalide(self,position_cible):
@@ -148,27 +152,19 @@ class FenetrePartie(Tk):
         else:
             return False, "Veuillez choisir un nouveau déplacement"
 
-    def tour(self):
+    def tour(self,position, position_cible):
         if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
             self.partie.doit_prendre = True
 
-            # Affiche l'état du jeu
-        self.messages['foreground'] = "black"
-        self.messages['text'] = "Tour du joueur {}.".format(self.partie.couleur_joueur_courant)
+        self.partie.position_source_selectionnee = position
 
         if self.partie.position_source_selectionnee is None:
-            self.partie.position_source_selectionnee = self.selection_case
-            position_cible = self.selection_case
-        else:
-            position_cible = self.selection_case
+            self.partie.position_source_selectionnee = self.selectionner
 
         while self.partie.damier.deplacer(self.partie.position_source_selectionnee, position_cible) == "erreur":
             self.messages['foreground']="black"
             self.messages['text'] = "Erreur de déplacement. Recommencez."
-            if self.partie.position_source_selectionnee is None:
-                self.partie.position_source_selectionnee = self.selection_case
-            else:
-                position_cible = self.selection_case
+            self.tour(position, position_cible)
 
 
     def jouer(self):
