@@ -4,7 +4,8 @@ from tkinter import Tk, Label, NSEW
 from tp3.Partie2.canvas_damier import CanvasDamier
 from tp3.Partie1.partie import Partie
 from tp3.Partie1.position import Position
-
+#pour tester
+from tp3.Partie1.piece import Piece
 
 class FenetrePartie(Tk):
     """Interface graphique de la partie de dames.
@@ -90,7 +91,7 @@ class FenetrePartie(Tk):
                     self.messages["foreground"] = "red"
                     self.messages["text"] = "Déplacement impossible."
 
-    def deplacer_piece(self,position_source, position_cible):
+    def deplacer_piece(self, position_source, position_cible):
         """Méthode qui permet de déplacer la piece si le return est vrai et si le return est False, dit au
         joueur de changer de piece.
 
@@ -100,12 +101,13 @@ class FenetrePartie(Tk):
         """
 
         if self.partie.damier.deplacer(position_source, position_cible) == "ok":
-            self.partie.damier[position_cible] = self.partie.damier.pop(position_source)
-            self.partie.damier.pop(position_source)
+            self.partie.damier.cases[position_source] = self.partie.damier.cases[position_cible]
+            self.partie.damier.cases.pop(position_source)
             # update le canvas pour avoir le nouveau dictionnaire
+            print(self.partie.damier.cases)
         elif self.partie.damier.deplacer(position_source, position_cible) == "prise":
-            self.partie.damier[position_cible] = self.partie.damier.pop(position_source)
-            self.partie.damier.pop(position_source)
+            self.partie.damier.cases[position_cible] = self.partie.damier[position_source]
+            self.partie.damier.cases.pop(position_source)
             # comment faire position centre ?
             difference_ligne = position_cible.ligne - position_source.ligne
             difference_colone = position_cible.colone - position_source.colone
@@ -118,13 +120,18 @@ class FenetrePartie(Tk):
             else:
                 colone = position_source.colone - 1
             position_centre = Position(ligne, colone)
-            self.partie.damier.pop(position_centre)
+            self.partie.damier.cases.pop(position_centre)
             # update canvas
-
+            print(self.partie.damier.cases)
         else:
             return False, "Veuillez choisir un nouveau déplacement"
 
 
+x = FenetrePartie()
+x.partie.damier.cases[Position(4, 5)] = Piece("noir", "pion")
+
+print(x.partie.damier)
+print(x.deplacer_piece(Position(5, 4), Position(3, 6))) #erreur je sais pas pourquoi
 
 
 
