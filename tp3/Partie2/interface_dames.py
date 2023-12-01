@@ -14,8 +14,9 @@ class FenetrePartie(Tk):
         partie (Partie): Le gestionnaire de la partie de dame
         canvas_damier (CanvasDamier): Le «widget» gérant l'affichage du damier à l'écran
         messages (Label): Un «widget» affichant des messages textes à l'utilisateur du programme
+        jouer (Partie) :
 
-        TODO: AJOUTER VOS PROPRES ATTRIBUTS ICI!
+
     """
 
     def __init__(self):
@@ -34,6 +35,8 @@ class FenetrePartie(Tk):
         self.canvas_damier.grid(sticky=NSEW)
         self.canvas_damier.bind('<Button-1>', self.selectionner)
 
+
+
         # Ajout d'une étiquette d'information.
         self.messages = Label(self)
         self.messages.grid()
@@ -44,6 +47,8 @@ class FenetrePartie(Tk):
         # Truc pour le redimensionnement automatique des éléments de la fenêtre.
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
+
 
     def selectionner(self, event):
         """Méthode qui gère le clic de souris sur le damier.
@@ -65,10 +70,24 @@ class FenetrePartie(Tk):
             self.messages['foreground'] = 'red'
             self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
         else:
-            self.messages['foreground'] = 'black'
-            self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format( position)
 
-    def deplacement_invalide(self,position_source, position_cible):
+            self.messages['foreground'] = 'black'
+            self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
+        return position
+
+    def demander_deplacement(self,event):
+        """ méthode enregistrant le déplacement demander par le joueur
+
+        :return:
+        """
+        ligne = event.y // self.canvas_damier.n_pixels_par_case
+        colonne = event.x // self.canvas_damier.n_pixels_par_case
+        position = Position(ligne, colonne)
+
+        return position
+
+
+    def deplacement_invalide(self,position_cible):
         """ Méthode informant le joueur que son déplacement est invalide.
 
         :param position_source: (Position) : Position de la pièce de départ du joueur.
@@ -76,20 +95,14 @@ class FenetrePartie(Tk):
         :return: (bool) : True si déplacement invalide. False si autrement.
 
         """
-        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
-            if self.partie.damier.piece_peut_sauter_vers(position_source,position_cible):
-                return False
-            else:
-                self.messages['foreground'] = "red"
-                self.messages['text'] = "Déplacement impossible. Prise possible."
-                return True
+        if self.partie.position_cible_valide(self.demander_deplacement())[0]:
+            return self.deplacer_piece(self.partie.position_source_selectionnee, position_cible)
         else:
-            if self.partie.damier.piece_de_couleur_peut_se_deplacer(self.partie.couleur_joueur_courant):
-                if self.partie.damier.piece_peut_se_deplacer_vers(position_source, position_cible):
-                    return False
-                else:
-                    self.messages["foreground"] = "red"
-                    self.messages["text"] = "Déplacement impossible."
+            self.messages['foreground'] = "red"
+            self.messages['text'] = self.partie.position_cible_valide(position_cible)[1]
+
+
+
 
     def deplacer_piece(self, position_source, position_cible):
         """Méthode qui permet de déplacer la piece si le return est vrai et si le return est False, dit au
@@ -126,12 +139,31 @@ class FenetrePartie(Tk):
         else:
             return False, "Veuillez choisir un nouveau déplacement"
 
+    def tour(self):
+        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
+            self.partie.doit_prendre = True
 
-x = FenetrePartie()
-x.partie.damier.cases[Position(4, 5)] = Piece("noir", "pion")
+            # Affiche l'état du jeu
+        self.messages['foreground'] = "black"
+        self.messages['text'] = "Tour du joueur {}.".format(self.partie.couleur_joueur_courant)
 
-print(x.partie.damier)
-print(x.deplacer_piece(Position(5, 4), Position(3, 6))) #erreur je sais pas pourquoi
+    def jouer(self):
+        while self.partie.damier.piece_de_couleur_peut_se_deplacer(self.partie.couleur_joueur_courant) or \
+                self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
+            self.tour()
+
+        if self.partie.couleur_joueur_courant == "blanc":
+            return "noir"
+        else:
+            return "blanc"
+
+# if __name__ == '__main__':
+#
+#     # x = FenetrePartie()
+#     # x.partie.damier.cases[Position(4, 5)] = Piece("noir", "pion")
+#     #
+#     # print(x.partie.damier)
+#     # print(x.deplacer_piece(Position(5, 4), Position(3, 6))) #erreur je sais pas pourquoi
 
 
 
