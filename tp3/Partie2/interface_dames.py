@@ -110,12 +110,13 @@ class FenetrePartie(Tk):
 
 
     def deplacer_piece(self, position_source, position_cible):
-        """Méthode qui permet de déplacer la piece si le return est vrai et si le return est False, dit au
-        joueur de changer de piece.
+        """Méthode qui permet de déplacer la piece en changeant le dictionnaires des cases
+        (enlève des piece s'il y a une prise et en déplaceant le joueur)
+        Ne s'active que quand le déplacement est valide
 
         :param position_source: (Position) la position de la piece
         :param position_cible: (Position) la position à l'arriver de la piece
-        :return: (tuple) pour le premier élément, vrai si le déplacement est fait, faux s'il est impossible
+        :return: (dict) Le nouveau dictionnaire r=prennant en compte le déplacement
         """
 
         if self.partie.damier.deplacer(position_source, position_cible) == "ok":
@@ -168,6 +169,11 @@ class FenetrePartie(Tk):
 
 
     def jouer(self):
+        """ Le changement de couleur en s'assurant que lorsqu'une prise est possible, elle doit être fait
+        # DOIT-TON S'ASSURER QUE C'EST LA MÊME PIECE OU QUE N'IMPORTE QUELLE PIECE DU JOUEUR APRÈS AVOIR FAIT UNE PRISE PEUT FAIRE UNE PRISE?
+
+        :return: change la personne qui joue (donc la couleur du joueur)
+        """
         while self.partie.damier.piece_de_couleur_peut_se_deplacer(self.partie.couleur_joueur_courant) or \
                 self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.partie.couleur_joueur_courant):
             self.tour()
