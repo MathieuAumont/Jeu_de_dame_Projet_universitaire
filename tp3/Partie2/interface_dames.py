@@ -7,6 +7,7 @@ from tp3.Partie1.position import Position
 #pour tester
 from tp3.Partie1.piece import Piece
 
+
 class FenetrePartie(Tk):
     """Interface graphique de la partie de dames.
 
@@ -67,7 +68,6 @@ class FenetrePartie(Tk):
 
         """
 
-        # On trouve le numéro de ligne/colonne en divisant les positions en y/x par le nombre de pixels par case.
         ligne = event.y // self.canvas_damier.n_pixels_par_case
         colonne = event.x // self.canvas_damier.n_pixels_par_case
         position = Position(ligne, colonne)
@@ -78,19 +78,36 @@ class FenetrePartie(Tk):
         if piece is None:
             if self.partie.position_source_selectionnee is not None:
                 self.position_cible = position
-                if self.deplacement_invalide(self.position_cible):
+                resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
+                if resultat_prise == "ok":
                     self.canvas_damier.actualiser()
                     self.messages['foreground'] = 'black'
                     self.messages['text'] = 'Déplacement accepté'
+                    self.partie.position_source_selectionnee = None
+                    if self.partie.couleur_joueur_courant == "noir":
+                        self.partie.couleur_joueur_courant = "blanc"
+                    else:
+                        self.partie.couleur_joueur_courant = "noir"
+                elif resultat_prise == "prise":
+                    self.canvas_damier.actualiser()
+                    self.messages['foreground'] = 'black'
+                    self.messages['text'] = 'Déplacement accepté'
+                    self.partie.position_source_selectionnee = None
+                    if self.partie.couleur_joueur_courant == "noir":
+                        self.partie.couleur_joueur_courant = "blanc"
+                    else:
+                        self.partie.couleur_joueur_courant = "noir"
                 else:
                     self.messages['foreground'] = "red"
                     self.messages['text'] = "Erreur. Déplacement impossible"
+                    self.partie.position_source_selectionnee = None
             else:
                 self.messages['foreground'] = 'red'
                 self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
         elif piece.couleur != self.partie.couleur_joueur_courant:
             self.messages['foreground'] = 'red'
             self.messages['text'] = "Erreur: pièce de l'adversaire."
+            self.partie.position_source_selectionnee = None
         else:
             if self.partie.position_source_selectionnee is None:
                 self.partie.position_source_selectionnee = position
@@ -115,61 +132,6 @@ class FenetrePartie(Tk):
         else:
             self.messages['foreground'] = "red"
             self.messages['text'] = self.partie.position_cible_valide(position_cible)[1]
-
-
-
-
-    def deplacer_piece(self, position_source, position_cible):
-        """Méthode qui permet de déplacer la piece en changeant le dictionnaires des cases
-        (enlève des piece s'il y a une prise et en déplaceant le joueur)
-        Ne s'active que quand le déplacement est valide
-
-        :param position_source: (Position) la position de la piece
-        :param position_cible: (Position) la position à l'arriver de la piece
-        :return: (dict) Le nouveau dictionnaire r=prennant en compte le déplacement
-        """
-
-        if self.partie.damier.deplacer(position_source, position_cible) == "ok":
-            self.partie.damier.cases[position_source] = self.partie.damier.cases[position_cible]
-            self.partie.damier.cases.pop(position_source)
-            # update le canvas pour avoir le nouveau dictionnaire
-            print(self.partie.damier.cases)
-        elif self.partie.damier.deplacer(position_source, position_cible) == "prise":
-            self.partie.damier.cases[position_cible] = self.partie.damier[position_source]
-            self.partie.damier.cases.pop(position_source)
-            # comment faire position centre ?
-            difference_ligne = position_cible.ligne - position_source.ligne
-            difference_colone = position_cible.colone - position_source.colone
-            if difference_ligne == 2:
-                ligne = position_source.ligne + 1
-            else:
-                ligne = position_source.ligne - 1
-            if difference_colone == 2:
-                colone = position_source.colone + 1
-            else:
-                colone = position_source.colone - 1
-            position_centre = Position(ligne, colone)
-            self.partie.damier.cases.pop(position_centre)
-            # update canvas
-            print(self.partie.damier.cases)
-        else:
-            return False, "Veuillez choisir un nouveau déplacement"
-
-
-
-
-# if __name__ == '__main__':
-#
-#     # x = FenetrePartie()
-#     # x.partie.damier.cases[Position(4, 5)] = Piece("noir", "pion")
-#     #
-#     # print(x.partie.damier)
-#     # print(x.deplacer_piece(Position(5, 4), Position(3, 6))) #erreur je sais pas pourquoi
-
-#print(x.partie.damier)
-#print(x.deplacer_piece(Position(5, 4), Position(3, 6))) #erreur je sais pas pourquoi
-
-
 
 
 

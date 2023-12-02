@@ -60,12 +60,12 @@ class Partie:
         """
         if self.damier.position_est_dans_damier(position_source):  # Est-ce que c'est dans le damier
             if position_source not in self.damier.cases:  # Est-ce qu'il y a une piece à la case
-                return False, print("Il n'y a pas de piece dans votre case.")
+                return False, "Il n'y a pas de piece dans votre case."
             elif self.damier.recuperer_piece_a_position(position_source).couleur != self.couleur_joueur_courant:
                 # Est-ce que la piece t'appartient
-                return False, print("Cette piece ne vous appartient pas.")
+                return False, "Cette piece ne vous appartient pas."
         else:
-            return False, print("Vous n'êtes pas dans le damier.")
+            return False, "Vous n'êtes pas dans le damier."
 
         if not self.damier.piece_de_couleur_peut_faire_une_prise(self.damier.recuperer_piece_a_position(position_source).couleur):
             # Est-ce que le joueur peut faire une prise?
@@ -73,12 +73,11 @@ class Partie:
                 # est-ce que la piece peut se déplacer
                 return True, ""
             else:
-                return False, print("Cette piece ne peut pas se déplacer.")
+                return False, "Cette piece ne peut pas se déplacer."
         elif self.damier.piece_peut_faire_une_prise(position_source):  # Est-ce que cette piece peut faire une prise
             return True, ""
         else:
-            return (False,
-                    print("Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."))
+            return False,"Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."
 
     def position_cible_valide(self, position_cible):
         """Vérifie si la position cible est valide (en fonction de la position source sélectionnée). Doit non seulement
