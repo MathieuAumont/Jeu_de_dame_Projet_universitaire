@@ -135,7 +135,6 @@ class FenetrePartie(Tk):
             else:
                 self.position_cible = position
 
-
     def deplacement_invalide(self,position_cible):
         """ Méthode informant le joueur que son déplacement est invalide.
 
