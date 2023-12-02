@@ -76,7 +76,7 @@ class FenetrePartie(Tk):
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
         if piece is None:
-            if not self.devons_nous_faire_une_prise():
+            if not self.devons_nous_faire_une_prise():  # Si la personne n'a pas la possibilité de faire une prise.
                 if self.partie.position_source_selectionnee is not None:
                     self.position_cible = position
                     resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
@@ -97,7 +97,7 @@ class FenetrePartie(Tk):
                     self.messages['foreground'] = 'red'
                     self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
 
-            else:
+            else:  # Si le dplacement doit être une prise.
                 if self.partie.position_source_selectionnee is not None:
                     self.position_cible = position
                     if self.partie.damier.piece_peut_faire_une_prise(self.partie.position_source_selectionnee):
@@ -153,6 +153,11 @@ class FenetrePartie(Tk):
             self.messages['text'] = self.partie.position_cible_valide(position_cible)[1]
 
     def devons_nous_faire_une_prise(self):
+        """
+        Méthode permettant de voir si le joeur doit faire une prise pour aider avec la méthode "selectionner".
+        :return: (bool) True si le joueur doit faire une prise, False sinon.
+        """
+
         couleur_joueur = self.partie.couleur_joueur_courant
         if self.partie.damier.piece_de_couleur_peut_faire_une_prise(couleur_joueur):
             return True
