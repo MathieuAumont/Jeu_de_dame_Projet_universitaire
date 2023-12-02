@@ -1,4 +1,4 @@
-# Auteurs: À compléter
+# Auteurs: Kim et Mathieu
 
 from tkinter import Tk, Label, NSEW
 from tp3.Partie2.canvas_damier import CanvasDamier
@@ -76,34 +76,53 @@ class FenetrePartie(Tk):
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
         if piece is None:
-            if self.partie.position_source_selectionnee is not None:
-                self.position_cible = position
-                resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
-                if resultat_prise == "ok":
-                    self.canvas_damier.actualiser()
-                    self.messages['foreground'] = 'black'
-                    self.messages['text'] = 'Déplacement accepté'
-                    self.partie.position_source_selectionnee = None
-                    if self.partie.couleur_joueur_courant == "noir":
-                        self.partie.couleur_joueur_courant = "blanc"
+            if not self.devons_nous_faire_une_prise():
+                if self.partie.position_source_selectionnee is not None:
+                    self.position_cible = position
+                    resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
+                    if resultat_prise == "ok":
+                        self.canvas_damier.actualiser()
+                        self.messages['foreground'] = 'black'
+                        self.messages['text'] = 'Déplacement accepté'
+                        self.partie.position_source_selectionnee = None
+                        if self.partie.couleur_joueur_courant == "noir":
+                            self.partie.couleur_joueur_courant = "blanc"
+                        else:
+                            self.partie.couleur_joueur_courant = "noir"
                     else:
-                        self.partie.couleur_joueur_courant = "noir"
-                elif resultat_prise == "prise":
-                    self.canvas_damier.actualiser()
-                    self.messages['foreground'] = 'black'
-                    self.messages['text'] = 'Déplacement accepté'
-                    self.partie.position_source_selectionnee = None
-                    if self.partie.couleur_joueur_courant == "noir":
-                        self.partie.couleur_joueur_courant = "blanc"
-                    else:
-                        self.partie.couleur_joueur_courant = "noir"
+                        self.messages['foreground'] = "red"
+                        self.messages['text'] = "Erreur. Déplacement impossible"
+                        self.partie.position_source_selectionnee = None
                 else:
-                    self.messages['foreground'] = "red"
-                    self.messages['text'] = "Erreur. Déplacement impossible"
-                    self.partie.position_source_selectionnee = None
+                    self.messages['foreground'] = 'red'
+                    self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
+
             else:
-                self.messages['foreground'] = 'red'
-                self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
+                if self.partie.position_source_selectionnee is not None:
+                    self.position_cible = position
+                    if self.partie.damier.piece_peut_faire_une_prise(self.partie.position_source_selectionnee):
+                        resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
+                        if resultat_prise == "prise":
+                            self.canvas_damier.actualiser()
+                            self.messages['foreground'] = 'black'
+                            if self.partie.damier.piece_peut_faire_une_prise(self.position_cible):
+                                self.messages['text'] = 'Vous devez faire une autre prise'
+                                self.partie.position_source_selectionnee = self.position_cible
+                            else:
+                                self.messages['text'] = 'Déplacement accepté'
+                                self.partie.position_source_selectionnee = None
+                                if self.partie.couleur_joueur_courant == "noir":
+                                    self.partie.couleur_joueur_courant = "blanc"
+                                else:
+                                    self.partie.couleur_joueur_courant = "noir"
+                        else:
+                            self.messages['foreground'] = 'red'
+                            self.messages['text'] = 'Vous devez faire une prise'
+                    else:
+                        self.messages['foreground'] = 'red'
+                        self.messages['text'] = 'Vous devez faire une prise'
+                        self.partie.position_source_selectionnee = None
+
         elif piece.couleur != self.partie.couleur_joueur_courant:
             self.messages['foreground'] = 'red'
             self.messages['text'] = "Erreur: pièce de l'adversaire."
@@ -133,5 +152,9 @@ class FenetrePartie(Tk):
             self.messages['foreground'] = "red"
             self.messages['text'] = self.partie.position_cible_valide(position_cible)[1]
 
-
-
+    def devons_nous_faire_une_prise(self):
+        couleur_joueur = self.partie.couleur_joueur_courant
+        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(couleur_joueur):
+            return True
+        else:
+            return False

@@ -276,7 +276,7 @@ class Damier:
             return "erreur"
 
         if self.piece_peut_faire_une_prise(position_source):  # déterminer si la pièce source peut faire une prise
-            for index in range(0,4):
+            for index in range(0, 4):
                 if position_cible == position_source.quatre_positions_sauts()[index] and self.cases[position_source.quatre_positions_diagonales()[index]] is not None: # vérifie si position cible est valide avec une prise
                     self.cases.pop(position_source.quatre_positions_diagonales()[index])
                     self.cases[position_cible] = self.cases[position_source]  # modifie le damier avec le déplacement
