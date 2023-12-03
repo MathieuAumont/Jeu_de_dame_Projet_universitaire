@@ -47,7 +47,7 @@ class FenetrePartie(Tk):
         self.messages_couleur.grid()
         self.messages_couleur['foreground'] = 'green'
         self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
-        
+
         # Ajout d'une étiquette d'information.
         self.messages = Label(self)
         self.messages.grid()
@@ -235,8 +235,12 @@ class FenetrePartie(Tk):
         Méthode qui affiche une étiquette indiquant qui est le joeur courant.
         :return:
         """
-        self.messages_couleur['foreground'] = 'green'
-        self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
+        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.joueur_courant):
+            self.messages_couleur['foreground'] = 'green'
+            self.messages_couleur['text'] = "tour du joueur {}. \nDOIT FAIRE UNE PRISE".format(self.joueur_courant)
+        else:
+            self.messages_couleur['foreground'] = 'green'
+            self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
 
     def prise_obligatoire_couleur(self, couleur):
         """
