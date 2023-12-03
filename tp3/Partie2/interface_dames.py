@@ -49,16 +49,11 @@ class FenetrePartie(Tk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-
     def piece_peut_etre_deplacer(self, position):
-
 
         if self.partie.damier.piece_peut_se_deplacer(position):
             self.messages['foreground'] = 'black'
             self.messages['text'] = 'Votre pièce peut se déplacer'
-
-
-
 
     def selectionner(self, event):
         """Méthode qui gère le clic de souris sur le damier.
@@ -81,14 +76,7 @@ class FenetrePartie(Tk):
                     self.position_cible = position
                     resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
                     if resultat_prise == "ok":
-                        self.canvas_damier.actualiser()
-                        self.messages['foreground'] = 'black'
-                        self.messages['text'] = 'Déplacement accepté'
-                        self.partie.position_source_selectionnee = None
-                        if self.partie.couleur_joueur_courant == "noir":
-                            self.partie.couleur_joueur_courant = "blanc"
-                        else:
-                            self.partie.couleur_joueur_courant = "noir"
+                        self.quand_il_y_a_un_deplacement()
                     else:
                         self.messages['foreground'] = "red"
                         self.messages['text'] = "Erreur. Déplacement impossible"
@@ -111,10 +99,7 @@ class FenetrePartie(Tk):
                             else:
                                 self.messages['text'] = 'Déplacement accepté'
                                 self.partie.position_source_selectionnee = None
-                                if self.partie.couleur_joueur_courant == "noir":
-                                    self.partie.couleur_joueur_courant = "blanc"
-                                else:
-                                    self.partie.couleur_joueur_courant = "noir"
+                                self.changer_joueur_actif()
                         else:
                             self.messages['foreground'] = 'red'
                             self.messages['text'] = 'Vous devez faire une prise'
@@ -162,3 +147,24 @@ class FenetrePartie(Tk):
             return True
         else:
             return False
+
+    def changer_joueur_actif(self):
+        """
+        Méthode qui change le joeur actif
+        :return:
+        """
+        if self.partie.couleur_joueur_courant == "noir":
+            self.partie.couleur_joueur_courant = "blanc"
+        else:
+            self.partie.couleur_joueur_courant = "noir"
+
+    def quand_il_y_a_un_deplacement(self):
+        """
+        Méthode qui fait les changement nécessaire lorsqu'une piece fait un déplacement
+        :return:
+        """
+        self.canvas_damier.actualiser()
+        self.messages['foreground'] = 'black'
+        self.messages['text'] = 'Déplacement accepté'
+        self.partie.position_source_selectionnee = None
+        self.changer_joueur_actif()
