@@ -226,6 +226,8 @@ class FenetrePartie(Tk):
             self.nouvelle_piece_source()
 
     def nouvelle_partie(self):
+
+        self.destroy()
         FenetrePartie()
 
     def quitter(self):
