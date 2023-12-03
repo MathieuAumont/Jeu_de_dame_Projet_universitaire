@@ -66,7 +66,10 @@ class FenetrePartie(Tk):
                 self.message_aux_joueurs('erreur')
             else:
                 if self.partie.damier.deplacer(position_source,position_cible) == "prise":
+                    self.canvas_damier.actualiser()
                     self.message_aux_joueurs('ok')
+                    self.alterner_joueur(position_source)
+
                 elif self.partie.damier.deplacer(position_source,position_cible) == 'erreur':
                     self.message_aux_joueurs('erreur')
         else:
@@ -74,12 +77,12 @@ class FenetrePartie(Tk):
                 self.message_aux_joueurs('erreur')
             else:
                 if self.partie.damier.deplacer(position_source,position_cible) == "ok":
+                    self.canvas_damier.actualiser()
                     self.message_aux_joueurs('ok')
+                    self.alterner_joueur(position_source)
                 elif self.partie.damier.deplacer(position_source,position_cible) == 'erreur':
                     self.message_aux_joueurs('erreur')
-        self.canvas_damier.actualiser()
-        if self.prise_obligatoire(self.joueur_courant):
-            self.message_aux_joueurs('prise')
+
 
 
 
@@ -104,7 +107,7 @@ class FenetrePartie(Tk):
             if self.partie.position_source_selectionnee is not None:
                 self.position_cible = position
                 self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
-                self.alterner_joueur(self.partie.position_source_selectionnee)
+
                 #     self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
                 #     self.quand_il_y_a_un_deplacement()
                 #     resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
