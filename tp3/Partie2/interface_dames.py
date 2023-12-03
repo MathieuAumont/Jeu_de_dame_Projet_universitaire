@@ -45,8 +45,10 @@ class FenetrePartie(Tk):
         self.messages.grid()
 
         # message du premier joueur à jouer
-        self.messages['foreground'] = 'green'
-        self.messages['text'] = "tour du joueur {}.".format(self.joueur_courant)
+        self.messages_couleur = Label(self)
+        self.messages_couleur.grid()
+        self.messages_couleur['foreground'] = 'green'
+        self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
 
         # Nom de la fenêtre («title» est une méthode de la classe de base «Tk»)
         self.title("Jeu de dames")
@@ -112,7 +114,7 @@ class FenetrePartie(Tk):
                 self.position_cible = position
                 self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
         elif piece.couleur != self.joueur_courant:
-            self.message_aux_joueurs('joueur')
+            self.message_aux_joueurs('couleur')
             self.nouvelle_piece_source()
         else:
             if self.prise_obligatoire_couleur(self.joueur_courant):
@@ -156,12 +158,12 @@ class FenetrePartie(Tk):
 
         elif self.joueur_courant == "blanc":
             self.joueur_courant = "noir"
-            self.message_aux_joueurs('joueur')
+            self.afficher_couleur_joueur_courant()
             self.nouvelle_piece_source()
 
         else:
             self.joueur_courant = "blanc"
-            self.message_aux_joueurs('joueur')
+            self.afficher_couleur_joueur_courant()
             self.nouvelle_piece_source()
 
     def nouvelle_partie(self):
@@ -211,14 +213,17 @@ class FenetrePartie(Tk):
             self.messages['text'] = (
                 "Posibilité d'une autre prise de la pièce à la position {}.".format(
                     self.partie.position_source_forcee))
+        elif chaine == 'couleur':
+            self.messages['foreground'] = 'red'
+            self.messages['text'] = "Pièce de l'adversaire"
 
     def afficher_couleur_joueur_courant(self):
         """
         Méthode qui affiche une étiquette indiquant qui est le joeur courant.
         :return:
         """
-        self.messages['foreground'] = 'green'
-        self.messages['text'] = "tour du joueur {}.".format(self.joueur_courant)
+        self.messages_couleur['foreground'] = 'green'
+        self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
 
     def prise_obligatoire_couleur(self, couleur):
         """
