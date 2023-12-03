@@ -35,12 +35,21 @@ class FenetrePartie(Tk):
         self.canvas_damier = CanvasDamier(self, self.partie.damier, 60)
         self.canvas_damier.grid(sticky=NSEW)
         self.canvas_damier.bind('<Button-1>', self.selectionner)
+
+        #position ciblée par le joueur
         self.position_cible = None
 
+        #joueur courant
+        self.joueur_courant = self.partie.couleur_joueur_courant
 
         # Ajout d'une étiquette d'information.
         self.messages = Label(self)
         self.messages.grid()
+
+        #message du premier joueur à jouer
+        self.messages['foreground'] = 'green'
+        self.messages['text'] = "tour du joueur {}.".format(self.joueur_courant)
+
 
         # Nom de la fenêtre («title» est une méthode de la classe de base «Tk»)
         self.title("Jeu de dames")
@@ -49,14 +58,34 @@ class FenetrePartie(Tk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-    def piece_peut_etre_deplacer(self, position):
+    def deplacement_piece(self, position_source, position_cible):
 
-        if self.partie.damier.piece_peut_se_deplacer(position):
-            self.messages['foreground'] = 'black'
-            self.messages['text'] = 'Votre pièce peut se déplacer'
+        if self.prise_obligatoire(self.joueur_courant):
+            self.message_aux_joueurs('prise')
+            if self.deplacement_invalide(position_cible):
+                self.message_aux_joueurs('erreur')
+            else:
+                if self.partie.damier.deplacer(position_source,position_cible) == "prise":
+                    self.message_aux_joueurs('ok')
+                elif self.partie.damier.deplacer(position_source,position_cible) == 'erreur':
+                    self.message_aux_joueurs('erreur')
+        else:
+            if self.deplacement_invalide(position_cible):
+                self.message_aux_joueurs('erreur')
+            else:
+                if self.partie.damier.deplacer(position_source,position_cible) == "ok":
+                    self.message_aux_joueurs('ok')
+                elif self.partie.damier.deplacer(position_source,position_cible) == 'erreur':
+                    self.message_aux_joueurs('erreur')
+        self.canvas_damier.actualiser()
+        if self.prise_obligatoire(self.joueur_courant):
+            self.message_aux_joueurs('prise')
+
+
 
     def selectionner(self, event):
         """Méthode qui gère le clic de souris sur le damier.
+         Permet de stocker des positions pour effectuer des déplacements
 
         Args:
             event (tkinter.Event): Objet décrivant l'évènement qui a causé l'appel de la méthode.
@@ -71,54 +100,60 @@ class FenetrePartie(Tk):
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
         if piece is None:
-            if not self.devons_nous_faire_une_prise():  # Si la personne n'a pas la possibilité de faire une prise.
-                if self.partie.position_source_selectionnee is not None:
-                    self.position_cible = position
-                    resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
-                    if resultat_prise == "ok":
-                        self.quand_il_y_a_un_deplacement()
-                    else:
-                        self.messages['foreground'] = "red"
-                        self.messages['text'] = "Erreur. Déplacement impossible"
-                        self.partie.position_source_selectionnee = None
-                else:
-                    self.messages['foreground'] = 'red'
-                    self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
 
-            else:  # Si le dplacement doit être une prise.
-                if self.partie.position_source_selectionnee is not None:
-                    self.position_cible = position
-                    if self.partie.damier.piece_peut_faire_une_prise(self.partie.position_source_selectionnee):
-                        resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
-                        if resultat_prise == "prise":
-                            self.canvas_damier.actualiser()
-                            self.messages['foreground'] = 'black'
-                            if self.partie.damier.piece_peut_faire_une_prise(self.position_cible):
-                                self.messages['text'] = 'Vous devez faire une autre prise'
-                                self.partie.position_source_selectionnee = self.position_cible
-                            else:
-                                self.messages['text'] = 'Déplacement accepté'
-                                self.partie.position_source_selectionnee = None
-                                self.changer_joueur_actif()
-                        else:
-                            self.messages['foreground'] = 'red'
-                            self.messages['text'] = 'Vous devez faire une prise'
-                    else:
-                        self.messages['foreground'] = 'red'
-                        self.messages['text'] = 'Vous devez faire une prise'
-                        self.partie.position_source_selectionnee = None
+            if self.partie.position_source_selectionnee is not None:
+                self.position_cible = position
+                self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
+                self.alterner_joueur(self.partie.position_source_selectionnee)
+                #     self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
+                #     self.quand_il_y_a_un_deplacement()
+                #     resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
+                #     if resultat_prise == "ok":
+                #         self.quand_il_y_a_un_deplacement()
+                #     else:
+                #         self.messages['foreground'] = "red"
+                #         self.messages['text'] = "Erreur. Déplacement impossible"
+                #         self.partie.position_source_selectionnee = None
+                # else:
+                #     self.messages['foreground'] = 'red'
+                #     self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
 
-        elif piece.couleur != self.partie.couleur_joueur_courant:
-            self.messages['foreground'] = 'red'
-            self.messages['text'] = "Erreur: pièce de l'adversaire."
-            self.partie.position_source_selectionnee = None
+            # else:  # Si le dplacement doit être une prise.
+            #     if self.partie.position_source_selectionnee is not None:
+            #         self.position_cible = position
+            #         if self.partie.damier.piece_peut_faire_une_prise(self.partie.position_source_selectionnee):
+            #             resultat_prise = self.partie.damier.deplacer(self.partie.position_source_selectionnee, self.position_cible)
+            #             if resultat_prise == "prise":
+            #                 self.canvas_damier.actualiser()
+            #                 self.messages['foreground'] = 'black'
+            #                 if self.partie.damier.piece_peut_faire_une_prise(self.position_cible):
+            #                     self.messages['text'] = 'Vous devez faire une autre prise'
+            #                     self.partie.position_source_selectionnee = self.position_cible
+            #                 else:
+            #                     self.messages['text'] = 'Déplacement accepté'
+            #                     self.partie.position_source_selectionnee = None
+            #                     self.changer_joueur_actif()
+            #             else:
+            #                 self.messages['foreground'] = 'red'
+            #                 self.messages['text'] = 'Vous devez faire une prise'
+            #         else:
+            #             self.messages['foreground'] = 'red'
+            #             self.messages['text'] = 'Vous devez faire une prise'
+            #             self.partie.position_source_selectionnee = None
+
+        elif piece.couleur != self.joueur_courant:
+            self.message_aux_joueurs('joueur')
+            self.nouvelle_piece_source()
+
         else:
+            if self.prise_obligatoire(self.joueur_courant):
+                self.message_aux_joueurs('prise')
             if self.partie.position_source_selectionnee is None:
                 self.partie.position_source_selectionnee = position
-                self.messages['foreground'] = 'black'
-                self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(position)
-            else:
-                self.position_cible = position
+                self.message_aux_joueurs('select')
+
+
+
 
     def deplacement_invalide(self,position_cible):
         """ Méthode informant le joueur que son déplacement est invalide.
@@ -128,43 +163,81 @@ class FenetrePartie(Tk):
         :return: (bool) : True si déplacement invalide. False si autrement.
 
         """
-        if self.partie.position_cible_valide(position_cible)[0]:
-            return (self.partie.damier.deplacer(self.partie.position_source_selectionnee, position_cible) == "ok" or
-                    self.partie.damier.deplacer(self.partie.position_source_selectionnee, position_cible) == "prise")
+        return not self.partie.position_cible_valide(position_cible)[0]
 
+
+    def nouvelle_piece_source(self):
+
+        self.partie.position_source_selectionnee = None
+
+    def prise_multiple(self):
+        self.position_cible = self.partie.position_source_forcee
+        self.partie.position_source_selectionnee = self.partie.position_source_forcee
+
+    def alterner_joueur(self, position_source):
+        if self.partie.damier.piece_peut_faire_une_prise(position_source):
+            self.prise_multiple()
+            self.message_aux_joueurs('obligatoire')
+        elif self.joueur_courant == "blanc":
+            self.joueur_courant = "noir"
+            self.message_aux_joueurs('joueur')
+            self.nouvelle_piece_source()
         else:
-            self.messages['foreground'] = "red"
-            self.messages['text'] = self.partie.position_cible_valide(position_cible)[1]
+            self.joueur_courant = "blanc"
+            self.message_aux_joueurs('joueur')
+            self.nouvelle_piece_source()
+    def nouvelle_partie(self):
+        pass
 
-    def devons_nous_faire_une_prise(self):
+    def quitter(self):
+        pass
+    def message_aux_joueurs(self, chaine):
+        if chaine == 'erreur':
+            self.messages['foreground'] = "red"
+            self.messages['text'] = "Erreur. Déplacement impossible"
+        elif chaine == 'prise':
+            self.messages['foreground'] = 'red'
+            self.messages['text'] = 'Vous devez faire une prise'
+        elif chaine == 'ok':
+            self.messages['foreground'] = 'black'
+            self.messages['text'] = 'Déplacement accepté'
+        elif chaine == 'vide':
+            self.messages['foreground'] = 'red'
+            self.messages['text'] = 'Erreur: Aucune pièce à cet endroit.'
+        elif chaine == 'prises':
+            self.messages['foreground'] = 'black'
+            self.messages['text'] = 'Vous devez faire une autre prise'
+        elif chaine == 'joueur':
+            self.messages['foreground'] = 'green'
+            self.messages['text'] = "tour du joueur {}.".format(self.joueur_courant)
+        elif chaine == 'select':
+            self.messages['foreground'] = 'black'
+            self.messages['text'] = 'Pièce sélectionnée à la position {}.'.format(self.partie.position_source_selectionnee)
+        elif chaine == 'obligatoire':
+            self.messages['foreground'] = 'black'
+            self.messages['text'] = (
+                "Posibilité d'une autre prise.  sélectionnée à la position {}.".format(self.partie.position_source_forcee))
+
+
+
+
+    def afficher_couleur_joueur_courant(self):
+        self.messages['foreground'] = 'green'
+        self.messages['text'] = "tour du joueur {}.".format(self.joueur_courant)
+
+
+
+    def prise_obligatoire(self,couleur):
         """
         Méthode permettant de voir si le joeur doit faire une prise pour aider avec la méthode "selectionner".
         :return: (bool) True si le joueur doit faire une prise, False sinon.
         """
 
-        couleur_joueur = self.partie.couleur_joueur_courant
-        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(couleur_joueur):
+        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(couleur):
             return True
         else:
             return False
 
-    def changer_joueur_actif(self):
-        """
-        Méthode qui change le joeur actif
-        :return:
-        """
-        if self.partie.couleur_joueur_courant == "noir":
-            self.partie.couleur_joueur_courant = "blanc"
-        else:
-            self.partie.couleur_joueur_courant = "noir"
 
-    def quand_il_y_a_un_deplacement(self):
-        """
-        Méthode qui fait les changement nécessaire lorsqu'une piece fait un déplacement
-        :return:
-        """
-        self.canvas_damier.actualiser()
-        self.messages['foreground'] = 'black'
-        self.messages['text'] = 'Déplacement accepté'
-        self.partie.position_source_selectionnee = None
-        self.changer_joueur_actif()
+
+
