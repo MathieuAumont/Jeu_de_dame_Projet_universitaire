@@ -316,12 +316,14 @@ class FenetrePartie(Tk):
             fenetre_victoire = Tk()
             victorieux = Label(fenetre_victoire, text='Victoire du joueur blanc')
             victorieux.grid(padx=30,pady=30)
+            self.bouton_partie = Button(fenetre_victoire, text='Nouvelle Partie', command=self.nouvelle_partie)
             self.bouton_partie.grid()
             fenetre_victoire.mainloop()
         if joueur_blanc == 0:
             fenetre_victoire = Tk()
             victorieux = Label(fenetre_victoire, text='Victoire du joueur noir')
             victorieux.grid(padx=30, pady=30)
+            self.bouton_partie = Button(fenetre_victoire, text='Nouvelle Partie', command=self.nouvelle_partie)
             self.bouton_partie.grid()
             fenetre_victoire.mainloop()
         return False
