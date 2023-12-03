@@ -52,6 +52,15 @@ class Damier:
             Position(0, 7): Piece("noir", "pion"),
         }
 
+        # Pour tester les prises obligatoire dans le canvas
+        # self.cases = {
+        # Position(7, 6): Piece("blanc", "pion"),
+        # Position(6, 5): Piece("noir", "pion"),
+        # Position(4, 3): Piece("noir", "pion"),
+        # Position(6, 7): Piece("blanc", "pion"),
+        # Position(5, 6): Piece("noir", "pion"),
+        # }
+
     def recuperer_piece_a_position(self, position):
         """Récupère une pièce dans le damier à partir d'une position.
 

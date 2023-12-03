@@ -86,7 +86,7 @@ class FenetrePartie(Tk):
                 self.nouvelle_piece_source()
             elif self.position_forcer is not None:
                 if self.position_forcer != position_source:
-                    self.message_aux_joueurs("prise")
+                    self.message_aux_joueurs("prise avec autre piece")
                     self.nouvelle_piece_source()
                 else:
                     if self.partie.damier.piece_peut_sauter_vers(position_source, position_cible):
@@ -127,7 +127,7 @@ class FenetrePartie(Tk):
                 self.message_aux_joueurs('erreur')
                 self.nouvelle_piece_source()
             elif self.position_forcer is not None:
-                self.message_aux_joueurs("prise")
+                self.message_aux_joueurs("prise avec autre piece")
             else:
                 if self.partie.damier.piece_peut_se_deplacer_vers(position_source, position_cible):
                     self.partie.damier.deplacer(position_source, position_cible)
@@ -234,6 +234,10 @@ class FenetrePartie(Tk):
             self.messages['foreground'] = 'red'
             self.messages['text'] = 'Vous devez faire une prise'
 
+        elif chaine == "prise avec autre piece":
+            self.messages['foreground'] = 'red'
+            self.messages['text'] = 'Vous devez faire une prise avec la même pièce'
+
         elif chaine == 'ok':
             self.messages['foreground'] = 'black'
             self.messages['text'] = 'Déplacement accepté'
@@ -264,6 +268,7 @@ class FenetrePartie(Tk):
             self.messages['text'] = (
                 "Posibilité d'une autre prise à partir de la pièce à la position {}.".format(
                     self.partie.position_source_forcee))
+
         elif chaine == 'couleur':
             self.messages['foreground'] = 'red'
             self.messages['text'] = "Pièce de l'adversaire"
