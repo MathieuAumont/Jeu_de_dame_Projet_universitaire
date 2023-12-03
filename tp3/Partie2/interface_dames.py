@@ -1,6 +1,6 @@
 # Auteurs: Kim et Mathieu
 
-from tkinter import Tk, Label, NSEW
+from tkinter import Tk, Label, NSEW, Button,NE
 from tp3.Partie2.canvas_damier import CanvasDamier
 from tp3.Partie1.partie import Partie
 from tp3.Partie1.position import Position
@@ -34,8 +34,12 @@ class FenetrePartie(Tk):
         self.canvas_damier.grid(sticky=NSEW)
         self.canvas_damier.bind('<Button-1>', self.selectionner)
 
+<<<<<<< HEAD
         # La piece forcée après que cette pièce aille la possibilité de faire une autre prise après une prise
         self.position_forcer = None
+=======
+
+>>>>>>> 0718f60f133872e1527c83b42f31c524b9fca7bc
 
         # position ciblée par le joueur
         self.position_cible = None
@@ -43,22 +47,33 @@ class FenetrePartie(Tk):
         # joueur courant
         self.joueur_courant = self.partie.couleur_joueur_courant
 
-        # Ajout d'une étiquette d'information.
-        self.messages = Label(self)
-        self.messages.grid()
-
         # message du premier joueur à jouer
         self.messages_couleur = Label(self)
         self.messages_couleur.grid()
         self.messages_couleur['foreground'] = 'green'
         self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
 
+        # Ajout d'une étiquette d'information.
+        self.messages = Label(self)
+        self.messages.grid()
+
+
+        # Button nouvelle partie
+        self.bouton_partie = Button(self, text='Nouvelle Partie', command=self.nouvelle_partie)
+        self.bouton_partie.grid()
+
+        # Button quitter
+        self.bouton_quitter = Button(self, text='Quitter', command=self.quitter)
+        self.bouton_quitter.grid()
         # Nom de la fenêtre («title» est une méthode de la classe de base «Tk»)
         self.title("Jeu de dames")
+
 
         # Truc pour le redimensionnement automatique des éléments de la fenêtre.
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
+
 
     def deplacement_piece(self, position_source, position_cible):
         """
@@ -202,10 +217,10 @@ class FenetrePartie(Tk):
             self.nouvelle_piece_source()
 
     def nouvelle_partie(self):
-        pass
+        FenetrePartie()
 
     def quitter(self):
-        pass
+        quit()
 
     def message_aux_joueurs(self, chaine):
         """
@@ -257,8 +272,12 @@ class FenetrePartie(Tk):
         Méthode qui affiche une étiquette indiquant qui est le joeur courant.
         :return:
         """
-        self.messages_couleur['foreground'] = 'green'
-        self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
+        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.joueur_courant):
+            self.messages_couleur['foreground'] = 'green'
+            self.messages_couleur['text'] = "tour du joueur {}. \nDOIT FAIRE UNE PRISE".format(self.joueur_courant)
+        else:
+            self.messages_couleur['foreground'] = 'green'
+            self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
 
     def prise_obligatoire_couleur(self, couleur):
         """
