@@ -42,17 +42,22 @@ class FenetrePartie(Tk):
         # joueur courant
         self.joueur_courant = self.partie.couleur_joueur_courant
 
-        # Ajout d'une étiquette d'information.
-        self.messages = Label(self)
-        self.messages.grid()
-
         # message du premier joueur à jouer
         self.messages_couleur = Label(self)
         self.messages_couleur.grid()
         self.messages_couleur['foreground'] = 'green'
         self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
+        
+        # Ajout d'une étiquette d'information.
+        self.messages = Label(self)
+        self.messages.grid()
+
+
+        # Button nouvelle partie
         self.bouton_partie = Button(self, text='Nouvelle Partie', command=self.nouvelle_partie)
         self.bouton_partie.grid()
+
+        # Button quitter
         self.bouton_quitter = Button(self, text='Quitter', command=self.quitter)
         self.bouton_quitter.grid()
         # Nom de la fenêtre («title» est une méthode de la classe de base «Tk»)
