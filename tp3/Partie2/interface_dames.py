@@ -1,6 +1,6 @@
 # Auteurs: Kim et Mathieu
 
-from tkinter import Tk, Label, NSEW, Button,NE
+from tkinter import Tk, Label, NSEW, Button, NE
 from tp3.Partie2.canvas_damier import CanvasDamier
 from tp3.Partie1.partie import Partie
 from tp3.Partie1.position import Position
@@ -34,12 +34,9 @@ class FenetrePartie(Tk):
         self.canvas_damier.grid(sticky=NSEW)
         self.canvas_damier.bind('<Button-1>', self.selectionner)
 
-<<<<<<< HEAD
         # La piece forcée après que cette pièce aille la possibilité de faire une autre prise après une prise
         self.position_forcer = None
-=======
 
->>>>>>> 0718f60f133872e1527c83b42f31c524b9fca7bc
 
         # position ciblée par le joueur
         self.position_cible = None
@@ -164,7 +161,7 @@ class FenetrePartie(Tk):
                 self.position_cible = position
                 self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
         elif piece.couleur != self.joueur_courant:
-            self.message_aux_joueurs('joueur')
+            self.message_aux_joueurs('mauvaise piece')
             self.nouvelle_piece_source()
         else:
             if self.prise_obligatoire_couleur(self.joueur_courant):
@@ -252,6 +249,10 @@ class FenetrePartie(Tk):
         elif chaine == 'joueur':
             self.messages['foreground'] = 'green'
             self.messages['text'] = "tour du joueur {}.".format(self.joueur_courant)
+
+        elif chaine == "mauvaise piece":
+            self.messages['foreground'] = 'red'
+            self.messages['text'] = "Cette pièce ne vous appartient pas."
 
         elif chaine == 'select':
             self.messages['foreground'] = 'black'
