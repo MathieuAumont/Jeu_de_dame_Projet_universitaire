@@ -77,6 +77,7 @@ class FenetrePartie(Tk):
         :param position_cible: (Position) l'arriver voulu de la piece sélectionner
         :return:
         """
+
         if self.prise_obligatoire_couleur(self.joueur_courant):
             self.message_aux_joueurs('prise')
             if self.deplacement_invalide(position_cible):
@@ -105,7 +106,7 @@ class FenetrePartie(Tk):
                     self.alterner_joueur(position_source)
                 else:
                     self.message_aux_joueurs('erreur')
-
+        self.victoire()
     def selectionner(self, event):
         """Méthode qui gère le clic de souris sur le damier.
          Permet de stocker des positions pour effectuer des déplacements
@@ -252,6 +253,28 @@ class FenetrePartie(Tk):
             return True
         else:
             return False
+
+    def victoire(self):
+        joueur_noir = 0
+        joueur_blanc = 0
+        for piece in self.partie.damier.cases.values():
+            if piece.couleur == "noir":
+                joueur_noir += 1
+            else:
+                joueur_blanc += 1
+        if joueur_noir == 0:
+            fenetre_victoire = Tk()
+            victorieux = Label(fenetre_victoire, text='Victoire du joueur blanc')
+            victorieux.grid(padx=30,pady=30)
+            self.bouton_partie.grid()
+            fenetre_victoire.mainloop()
+        if joueur_blanc == 0:
+            fenetre_victoire = Tk()
+            victorieux = Label(fenetre_victoire, text='Victoire du joueur noir')
+            victorieux.grid(padx=30, pady=30)
+            self.bouton_partie.grid()
+            fenetre_victoire.mainloop()
+        return False
 
 
 
