@@ -185,12 +185,15 @@ class FenetrePartie(Tk):
     def nouvelle_piece_source(self):
         """
         Méthode donnant la possibilité de choisir une nouvelle piece source
-        :return:
+        :return: None
         """
         self.partie.position_source_selectionnee = None
 
     def prise_multiple(self):
-
+        """
+        en cas de prise multiple, cette méthode force le joueur courant à prendre la position forcée.
+        :return: None
+        """
         self.partie.position_source_forcee = self.position_cible
         self.partie.position_source_selectionnee = self.partie.position_source_forcee
 
@@ -199,7 +202,7 @@ class FenetrePartie(Tk):
         Méthode qui change le joueur actif en s'assurant de ne pas le changer lorsqu'une piece qui c'est déjà déplacer
         peut faire une autre prise
         :param position_source: (Position) la position À CONTINUER
-        :return:
+        :return:None
         """
         if self.partie.damier.piece_peut_faire_une_prise(position_source):
             self.prise_multiple()
@@ -216,12 +219,19 @@ class FenetrePartie(Tk):
             self.nouvelle_piece_source()
 
     def nouvelle_partie(self):
-
+        """
+        Méthode permettant de débuter une nouvelle partie en détruisant l'ancienne.
+        :return: None
+        """
         self.destroy()
         FenetrePartie()
 
 
     def quitter(self):
+        """
+        Méthode permetant de quitter la partie.
+        :return: None
+        """
         quit()
 
     def message_aux_joueurs(self, chaine):
