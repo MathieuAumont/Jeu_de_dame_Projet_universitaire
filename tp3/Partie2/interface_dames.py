@@ -84,7 +84,6 @@ class FenetrePartie(Tk):
             if self.position_forcee is not None:
                 if self.deplacement_invalide(position_cible):
                     self.message_aux_joueurs('erreur')
-                    self.canvas_damier.actualiser()
                 if self.partie.damier.piece_peut_sauter_vers(position_source, position_cible):
                     self.partie.damier.deplacer(position_source, position_cible)
                     self.canvas_damier.actualiser()
