@@ -144,6 +144,7 @@ class FenetrePartie(Tk):
             if self.prise_obligatoire_couleur(self.joueur_courant):
                 self.message_aux_joueurs('prise')
             if self.partie.position_source_selectionnee is None:
+                self.couleur_selection(position)
                 self.partie.position_source_selectionnee = position
                 self.message_aux_joueurs('select')
 
@@ -182,6 +183,7 @@ class FenetrePartie(Tk):
         if self.partie.damier.piece_peut_faire_une_prise(position_cible):
             self.prise_multiple()
             self.message_aux_joueurs('obligatoire')
+            self.couleur_selection(position_cible)
 
         elif self.joueur_courant == "blanc":
             self.joueur_courant = "noir"
@@ -309,3 +311,15 @@ class FenetrePartie(Tk):
             self.bouton_partie.grid()
             fenetre_victoire.mainloop()
         return False
+
+    def couleur_selection(self,position_source):
+        """
+        méthode qui met en vert la position choisie du joueur courant
+        :param position_source: (Position) Position choisie par le joueur
+        :return: None
+        """
+        self.canvas_damier.create_rectangle(position_source.colonne * 60, position_source.ligne * 60,
+                                            position_source.colonne * 60 + 60,
+                                            position_source.ligne * 60 + 60, fill= "green" )
+        self.canvas_damier.delete("piece")
+        self.canvas_damier.dessiner_pieces()
