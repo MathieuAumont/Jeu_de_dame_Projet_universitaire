@@ -84,6 +84,7 @@ class FenetrePartie(Tk):
             if self.position_forcee is not None:
                 if self.deplacement_invalide(position_cible):
                     self.message_aux_joueurs('erreur')
+                    self.canvas_damier.actualiser()
                 if self.partie.damier.piece_peut_sauter_vers(position_source, position_cible):
                     self.partie.damier.deplacer(position_source, position_cible)
                     self.canvas_damier.actualiser()
@@ -98,10 +99,12 @@ class FenetrePartie(Tk):
                         self.alterner_joueur(position_cible)
                 else:
                     self.message_aux_joueurs('erreur')
+                    self.canvas_damier.actualiser()
                     self.nouvelle_piece_source()
         else:
             if self.deplacement_invalide(position_cible):
                 self.message_aux_joueurs('erreur')
+                self.canvas_damier.actualiser()
                 self.nouvelle_piece_source()
             elif self.position_forcee is not None:
                 self.message_aux_joueurs("prise avec autre piece")
@@ -112,6 +115,7 @@ class FenetrePartie(Tk):
                     self.alterner_joueur(position_source)
                 else:
                     self.message_aux_joueurs('erreur')
+                    self.canvas_damier.actualiser()
                     self.nouvelle_piece_source()
         self.victoire()
 
@@ -137,8 +141,10 @@ class FenetrePartie(Tk):
                 self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
             else:
                 self.message_aux_joueurs("vide")
+                self.canvas_damier.actualiser()
         elif piece.couleur != self.joueur_courant:
             self.message_aux_joueurs('mauvaise piece')
+            self.canvas_damier.actualiser()
             self.nouvelle_piece_source()
         else:
             if self.prise_obligatoire_couleur(self.joueur_courant):
