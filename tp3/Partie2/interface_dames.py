@@ -332,35 +332,49 @@ class FenetrePartie(Tk):
         :param position_source: (Position) Position choisie par le joueur
         :return: None
         """
-        self.canvas_damier.create_rectangle(position_source.colonne * 60, position_source.ligne * 60,
-                                            position_source.colonne * 60 + 60,
-                                            position_source.ligne * 60 + 60, fill= "green" )
+        self.canvas_damier.create_rectangle(position_source.colonne * self.canvas_damier.n_pixels_par_case,
+                                            position_source.ligne * self.canvas_damier.n_pixels_par_case ,
+                                            position_source.colonne * self.canvas_damier.n_pixels_par_case +
+                                            self.canvas_damier.n_pixels_par_case,
+                                            position_source.ligne * self.canvas_damier.n_pixels_par_case +
+                                            self.canvas_damier.n_pixels_par_case, fill="green")
+
         self.canvas_damier.delete("piece")
         self.canvas_damier.dessiner_pieces()
 
     def couleur_deplacement_possible(self,position_source):
+
         if self.prise_obligatoire_couleur(self.joueur_courant):
             for position in self.partie.position_source_selectionnee.quatre_positions_sauts():
                 if self.partie.damier.piece_peut_sauter_vers(position_source,position):
-                    self.canvas_damier.create_rectangle(position.colonne * 60, position.ligne * 60,
-                                                        position.colonne * 60 + 60,
-                                                        position.ligne * 60 + 60, fill="orange")
+                    self.canvas_damier.create_rectangle(position.colonne * self.canvas_damier.n_pixels_par_case,
+                                                        position.ligne * self.canvas_damier.n_pixels_par_case,
+                                                        position.colonne * self.canvas_damier.n_pixels_par_case +
+                                                        self.canvas_damier.n_pixels_par_case,
+                                                        position.ligne * self.canvas_damier.n_pixels_par_case +
+                                                        self.canvas_damier.n_pixels_par_case, fill="orange")
                     self.canvas_damier.delete("piece")
                     self.canvas_damier.dessiner_pieces()
         else:
             if self.joueur_courant == "blanc":
                 for position in self.partie.position_source_selectionnee.positions_diagonales_haut():
                     if self.partie.damier.piece_peut_se_deplacer_vers(position_source,position):
-                        self.canvas_damier.create_rectangle(position.colonne * 60, position.ligne * 60,
-                                                            position.colonne * 60 + 60,
-                                                            position.ligne * 60 + 60, fill="orange")
+                        self.canvas_damier.create_rectangle(position.colonne * self.canvas_damier.n_pixels_par_case,
+                                                            position.ligne * self.canvas_damier.n_pixels_par_case,
+                                                            position.colonne * self.canvas_damier.n_pixels_par_case +
+                                                            self.canvas_damier.n_pixels_par_case,
+                                                            position.ligne * self.canvas_damier.n_pixels_par_case +
+                                                            self.canvas_damier.n_pixels_par_case, fill="orange")
                         self.canvas_damier.delete("piece")
                         self.canvas_damier.dessiner_pieces()
             else:
                 for position in self.partie.position_source_selectionnee.positions_diagonales_bas():
                     if self.partie.damier.piece_peut_se_deplacer_vers(position_source,position):
-                        self.canvas_damier.create_rectangle(position.colonne * 60, position.ligne * 60,
-                                                            position.colonne * 60 + 60,
-                                                            position.ligne * 60 + 60, fill="orange")
+                        self.canvas_damier.create_rectangle(position.colonne * self.canvas_damier.n_pixels_par_case,
+                                                            position.ligne * self.canvas_damier.n_pixels_par_case,
+                                                            position.colonne * self.canvas_damier.n_pixels_par_case +
+                                                            self.canvas_damier.n_pixels_par_case,
+                                                            position.ligne * self.canvas_damier.n_pixels_par_case +
+                                                            self.canvas_damier.n_pixels_par_case, fill="orange")
                         self.canvas_damier.delete("piece")
                         self.canvas_damier.dessiner_pieces()
