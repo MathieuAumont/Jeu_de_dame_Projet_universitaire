@@ -72,6 +72,48 @@ class FenetrePartie(Tk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
+    def selectionner(self, event):
+        """Méthode qui gère le clic de souris sur le damier.
+         Permet de stocker des positions pour effectuer des déplacements
+
+        Args:
+            event (tkinter.Event): Objet décrivant l'évènement qui a causé l'appel de la méthode.
+
+        """
+
+        ligne = event.y // self.canvas_damier.n_pixels_par_case
+        colonne = event.x // self.canvas_damier.n_pixels_par_case
+        position = Position(ligne, colonne)
+
+        # On récupère l'information sur la pièce à l'endroit choisi.
+        piece = self.partie.damier.recuperer_piece_a_position(position)
+
+        if piece is None:
+            if self.partie.position_source_selectionnee is not None:
+                self.position_cible = position
+                self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
+            else:
+                self.message_aux_joueurs("vide")
+                self.canvas_damier.actualiser()
+        elif piece.couleur != self.joueur_courant:
+            self.message_aux_joueurs('mauvaise piece')
+            self.canvas_damier.actualiser()
+            self.nouvelle_piece_source()
+        else:
+            if self.prise_obligatoire_couleur(self.joueur_courant):
+                self.message_aux_joueurs('prise')
+            if self.partie.position_source_selectionnee is None:
+                self.couleur_selection(position)
+                self.partie.position_source_selectionnee = position
+                self.message_aux_joueurs('select')
+                self.couleur_deplacement_possible(position)
+            else:
+                self.canvas_damier.actualiser()
+                self.couleur_selection(position)
+                self.partie.position_source_selectionnee = position
+                self.message_aux_joueurs('select')
+                self.couleur_deplacement_possible(position)
+
     def deplacement_piece(self, position_source, position_cible):
         """
         Méthode qui s'occupe de déplacer les pieces dans le canvas
@@ -118,47 +160,6 @@ class FenetrePartie(Tk):
                     self.nouvelle_piece_source()
         self.victoire()
 
-    def selectionner(self, event):
-        """Méthode qui gère le clic de souris sur le damier.
-         Permet de stocker des positions pour effectuer des déplacements
-
-        Args:
-            event (tkinter.Event): Objet décrivant l'évènement qui a causé l'appel de la méthode.
-
-        """
-
-        ligne = event.y // self.canvas_damier.n_pixels_par_case
-        colonne = event.x // self.canvas_damier.n_pixels_par_case
-        position = Position(ligne, colonne)
-
-        # On récupère l'information sur la pièce à l'endroit choisi.
-        piece = self.partie.damier.recuperer_piece_a_position(position)
-
-        if piece is None:
-            if self.partie.position_source_selectionnee is not None:
-                self.position_cible = position
-                self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
-            else:
-                self.message_aux_joueurs("vide")
-                self.canvas_damier.actualiser()
-        elif piece.couleur != self.joueur_courant:
-            self.message_aux_joueurs('mauvaise piece')
-            self.canvas_damier.actualiser()
-            self.nouvelle_piece_source()
-        else:
-            if self.prise_obligatoire_couleur(self.joueur_courant):
-                self.message_aux_joueurs('prise')
-            if self.partie.position_source_selectionnee is None:
-                self.couleur_selection(position)
-                self.partie.position_source_selectionnee = position
-                self.message_aux_joueurs('select')
-                self.couleur_deplacement_possible(position)
-            else:
-                self.canvas_damier.actualiser()
-                self.couleur_selection(position)
-                self.partie.position_source_selectionnee = position
-                self.message_aux_joueurs('select')
-                self.couleur_deplacement_possible(position)
 
     def deplacement_invalide(self, position_cible):
         """ Méthode informant le joueur que son déplacement est invalide.
@@ -176,6 +177,16 @@ class FenetrePartie(Tk):
         :return: None
         """
         self.partie.position_source_selectionnee = None
+    def prise_obligatoire_couleur(self, couleur):
+        """
+        Méthode permettant de voir si le joueur doit faire une prise pour aider avec la méthode "selectionner".
+        :return: (bool) True si le joueur doit faire une prise, False sinon.
+        """
+
+        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(couleur):
+            return True
+        else:
+            return False
 
     def prise_multiple(self):
         """
@@ -278,16 +289,6 @@ class FenetrePartie(Tk):
             self.messages_couleur['foreground'] = 'green'
             self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
 
-    def prise_obligatoire_couleur(self, couleur):
-        """
-        Méthode permettant de voir si le joueur doit faire une prise pour aider avec la méthode "selectionner".
-        :return: (bool) True si le joueur doit faire une prise, False sinon.
-        """
-
-        if self.partie.damier.piece_de_couleur_peut_faire_une_prise(couleur):
-            return True
-        else:
-            return False
 
     def victoire(self):
         """
@@ -363,4 +364,3 @@ class FenetrePartie(Tk):
                                                             position.ligne * 60 + 60, fill="orange")
                         self.canvas_damier.delete("piece")
                         self.canvas_damier.dessiner_pieces()
-
