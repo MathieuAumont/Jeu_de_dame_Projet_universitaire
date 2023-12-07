@@ -147,6 +147,7 @@ class FenetrePartie(Tk):
                 self.couleur_selection(position)
                 self.partie.position_source_selectionnee = position
                 self.message_aux_joueurs('select')
+                self.couleur_deplacement_possible(position)
 
     def deplacement_invalide(self, position_cible):
         """ Méthode informant le joueur que son déplacement est invalide.
@@ -184,6 +185,7 @@ class FenetrePartie(Tk):
             self.prise_multiple()
             self.message_aux_joueurs('obligatoire')
             self.couleur_selection(position_cible)
+            self.couleur_deplacement_possible(position_cible)
 
         elif self.joueur_courant == "blanc":
             self.joueur_courant = "noir"
@@ -323,3 +325,31 @@ class FenetrePartie(Tk):
                                             position_source.ligne * 60 + 60, fill= "green" )
         self.canvas_damier.delete("piece")
         self.canvas_damier.dessiner_pieces()
+
+    def couleur_deplacement_possible(self,position_source):
+        if self.prise_obligatoire_couleur(self.joueur_courant):
+            for position in self.partie.position_source_selectionnee.quatre_positions_sauts():
+                if self.partie.damier.piece_peut_sauter_vers(position_source,position):
+                    self.canvas_damier.create_rectangle(position.colonne * 60, position.ligne * 60,
+                                                        position.colonne * 60 + 60,
+                                                        position.ligne * 60 + 60, fill="orange")
+                    self.canvas_damier.delete("piece")
+                    self.canvas_damier.dessiner_pieces()
+        else:
+            if self.joueur_courant == "blanc":
+                for position in self.partie.position_source_selectionnee.positions_diagonales_haut():
+                    if self.partie.damier.piece_peut_se_deplacer_vers(position_source,position):
+                        self.canvas_damier.create_rectangle(position.colonne * 60, position.ligne * 60,
+                                                            position.colonne * 60 + 60,
+                                                            position.ligne * 60 + 60, fill="orange")
+                        self.canvas_damier.delete("piece")
+                        self.canvas_damier.dessiner_pieces()
+            else:
+                for position in self.partie.position_source_selectionnee.positions_diagonales_bas():
+                    if self.partie.damier.piece_peut_se_deplacer_vers(position_source,position):
+                        self.canvas_damier.create_rectangle(position.colonne * 60, position.ligne * 60,
+                                                            position.colonne * 60 + 60,
+                                                            position.ligne * 60 + 60, fill="orange")
+                        self.canvas_damier.delete("piece")
+                        self.canvas_damier.dessiner_pieces()
+
