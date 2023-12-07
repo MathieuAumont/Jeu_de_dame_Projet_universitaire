@@ -148,6 +148,12 @@ class FenetrePartie(Tk):
                 self.partie.position_source_selectionnee = position
                 self.message_aux_joueurs('select')
                 self.couleur_deplacement_possible(position)
+            else:
+                self.canvas_damier.actualiser()
+                self.couleur_selection(position)
+                self.partie.position_source_selectionnee = position
+                self.message_aux_joueurs('select')
+                self.couleur_deplacement_possible(position)
 
     def deplacement_invalide(self, position_cible):
         """ Méthode informant le joueur que son déplacement est invalide.
