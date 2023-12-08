@@ -12,12 +12,11 @@ class FenetrePartie(Tk):
     Attributes:
         partie (Partie): Le gestionnaire de la partie de dame
         canvas_damier (CanvasDamier): Le «widget» gérant l'affichage du damier à l'écran
-        messages (Label): Un «widget» affichant des messages textes à l'utilisateur du programme
-        jouer (Partie) :
         position_forcee (Position) : Position obligatoire si le joueur peut effectuer plusieurs prises
         position_cible (Position) : Position de déplacement choisi
         joueur_courant (Partie) : Couleur du joueur actif
         message_couleur (Label) : un "widget" affichant la couleur du joueur actif
+        messages (Label): Un «widget» affichant des messages textes à l'utilisateur du programme
         bouton_partie (Button) : un "widget" bouton qui permet de recommencer une partie
         bouton_quitter (Button) : un "widget" bouton qui permet de quitter la partie (autrement que par le X)
 
@@ -91,19 +90,25 @@ class FenetrePartie(Tk):
 
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
-        if piece is None:  # Si la position ne comtient pas de pièce.
+        if piece is None:  # Si la position ne contient pas de pièce.
             if self.partie.position_source_selectionnee is not None:  # S'il y a une pièce à la position source
                 # sélectionné, alors "piece" est en fait la position cible.
                 self.position_cible = position
                 self.deplacement_piece(self.partie.position_source_selectionnee, self.position_cible)
-            else:  # S'il n'y a pas de pièce à la position source, alors c'est que "piece" était supposer être
+            else:  # S'il n'y a pas de pièce à la position source, alors c'est que "piece" était supposée être
                 # la pièce à la position source, donc il y a une erreur.
                 self.message_aux_joueurs("vide")
                 self.canvas_damier.actualiser()
+
         elif piece.couleur != self.joueur_courant:  # Lorsque la pièce n'appartient pas au joueur.
-            self.message_aux_joueurs('mauvaise piece')
-            self.canvas_damier.actualiser()
-            self.nouvelle_piece_source()
+            if self.position_forcee is not None: # cas de position forcée
+                self.message_aux_joueurs('erreur') # message d'erreur de déplacement.
+            elif self.partie.position_source_selectionnee is None: # Message de pièce de l'adversaire
+                self.message_aux_joueurs('mauvaise piece')
+                self.canvas_damier.actualiser()
+                self.nouvelle_piece_source()
+            else: # Si position_source est déjà sélectionné et qu'elle n'est pas forcée.
+                self.message_aux_joueurs("erreur") # erreur de déplacement.
         else:  # Lorsque la pièce lui appartient.
             if self.prise_obligatoire_couleur(self.joueur_courant):
                 self.message_aux_joueurs('prise')
@@ -124,7 +129,7 @@ class FenetrePartie(Tk):
         Méthode qui s'occupe de déplacer les pieces dans le canvas.
         :param position_source: (Position) la position de la piece à déplacer
         :param position_cible: (Position) l'arriver voulu de la piece sélectionnee
-        :return: None
+
         """
 
         if self.prise_obligatoire_couleur(self.joueur_courant):  # Si le joueur courant doit faire une prise.
@@ -175,7 +180,7 @@ class FenetrePartie(Tk):
     def nouvelle_piece_source(self):
         """
         Méthode donnant la possibilité de choisir une nouvelle piece source.
-        :return: None
+
         """
         self.partie.position_source_selectionnee = None
 
@@ -193,7 +198,7 @@ class FenetrePartie(Tk):
     def prise_multiple(self):
         """
         en cas de prise multiple, cette méthode force le joueur courant à prendre la position forcée.
-        :return: None
+
         """
         self.position_forcee = self.position_cible
         self.partie.position_source_selectionnee = self.position_forcee
@@ -203,7 +208,7 @@ class FenetrePartie(Tk):
         Méthode qui change le joueur actif en s'assurant de ne pas le changer lorsqu'une piece qui c'est déjà déplacer
         peut faire une autre prise
         :param position_cible: (Position) la position finale du précédent déplacement.
-        :return:None
+
         """
         if self.partie.damier.piece_peut_faire_une_prise(position_cible):
             self.prise_multiple()
@@ -228,7 +233,7 @@ class FenetrePartie(Tk):
     def nouvelle_partie(self):
         """
         Méthode permettant de débuter une nouvelle partie en détruisant l'ancienne.
-        :return: None
+
         """
 
         self.destroy()
@@ -237,7 +242,7 @@ class FenetrePartie(Tk):
     def quitter(self):
         """
         Méthode permetant de quitter la partie.
-        :return: None
+
         """
         quit()
 
@@ -249,7 +254,7 @@ class FenetrePartie(Tk):
         Pour savoir dans quelle situation l'étiquette sera appelé, vous n'avez qu'à regarder le message
         envoyé au joueur.
         :param chaine: (str) la chaine indiquant ce qui se produit lors d'une partie
-        :return:None
+
         """
         if chaine == 'erreur':
             self.messages['foreground'] = "red"
@@ -285,7 +290,7 @@ class FenetrePartie(Tk):
     def afficher_couleur_joueur_courant(self):
         """
         Méthode qui affiche une étiquette indiquant qui est le joueur courant et s'il a l'obligation de faire une prise.
-        :return:None
+
         """
         if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.joueur_courant):
             self.messages_couleur['foreground'] = 'green'
@@ -296,8 +301,8 @@ class FenetrePartie(Tk):
 
     def victoire(self):
         """
-        Méthode déterminant si il y a une victoire. Si oui, une nouvelle fenêtre s'ouvre affichant le gagnant
-        :return: None
+        Méthode déterminant s'il y a une victoire. Si oui, une nouvelle fenêtre s'ouvre affichant le gagnant
+
         """
 
         police_de_caractere = ('Deja Vu', 30)
@@ -332,9 +337,9 @@ class FenetrePartie(Tk):
 
     def couleur_selection(self, position_source):
         """
-        méthode qui met en vert la position choisie du joueur courant
+        Méthode qui met la case choisie du joueur courant en vert.
         :param position_source: (Position) Position choisie par le joueur
-        :return: None
+
         """
         self.canvas_damier.create_rectangle(position_source.colonne * self.canvas_damier.n_pixels_par_case,
                                             position_source.ligne * self.canvas_damier.n_pixels_par_case,
@@ -347,6 +352,11 @@ class FenetrePartie(Tk):
         self.canvas_damier.dessiner_pieces()
 
     def couleur_deplacement_possible(self, position_source):
+        """
+        Méthode montrant toutes les posibilités de déplacement au joueur courant.
+        :param position_source: (Position) Position précédemment choisie par le joueur courant.
+
+        """
 
         if self.prise_obligatoire_couleur(self.joueur_courant):
             for position in self.partie.position_source_selectionnee.quatre_positions_sauts():
