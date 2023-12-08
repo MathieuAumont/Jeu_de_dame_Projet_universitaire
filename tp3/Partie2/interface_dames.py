@@ -39,7 +39,8 @@ class FenetrePartie(Tk):
         self.canvas_damier.grid(sticky=NSEW)
         self.canvas_damier.bind('<Button-1>', self.selectionner)
 
-        # La piece forcée après que cette pièce aille la possibilité de faire une autre prise après une prise
+        # La piece forcée lorsque cette pièce la possibilité de faire une prise après qu'elle aille fait une prise.
+        # Créer par Kim et Mathieu
         self.position_forcee = None
 
         # position ciblée par le joueur
@@ -65,6 +66,7 @@ class FenetrePartie(Tk):
         # Button quitter
         self.bouton_quitter = Button(self, text='Quitter', command=self.quitter)
         self.bouton_quitter.grid()
+
         # Nom de la fenêtre («title» est une méthode de la classe de base «Tk»)
         self.title("Jeu de dames")
 
@@ -86,6 +88,7 @@ class FenetrePartie(Tk):
         position = Position(ligne, colonne)
 
         # On récupère l'information sur la pièce à l'endroit choisi.
+
         piece = self.partie.damier.recuperer_piece_a_position(position)
 
         if piece is None:
@@ -279,8 +282,7 @@ class FenetrePartie(Tk):
 
     def afficher_couleur_joueur_courant(self):
         """
-        Méthode qui affiche une étiquette indiquant qui est le joeur courant.
-        :return:
+        Méthode qui affiche une étiquette indiquant qui est le joueur courant et s'il a l'obligation de faire une prise.
         """
         if self.partie.damier.piece_de_couleur_peut_faire_une_prise(self.joueur_courant):
             self.messages_couleur['foreground'] = 'green'
@@ -288,7 +290,6 @@ class FenetrePartie(Tk):
         else:
             self.messages_couleur['foreground'] = 'green'
             self.messages_couleur['text'] = "tour du joueur {}.".format(self.joueur_courant)
-
 
     def victoire(self):
         """

@@ -58,26 +58,34 @@ class Partie:
                  deuxième élément est un message d'erreur (ou une chaîne vide s'il n'y a pas d'erreur).
 
         """
-        if self.damier.position_est_dans_damier(position_source):  # Est-ce que c'est dans le damier
-            if position_source not in self.damier.cases:  # Est-ce qu'il y a une piece à la case
-                return False, "Il n'y a pas de piece dans votre case."
-            elif self.damier.recuperer_piece_a_position(position_source).couleur != self.couleur_joueur_courant:
-                # Est-ce que la piece t'appartient
-                return False, "Cette piece ne vous appartient pas."
-        else:
-            return False, "Vous n'êtes pas dans le damier."
+        if self.position_source_forcee is None:  # S'il n'y a pas de position source forcée.
+            if self.damier.position_est_dans_damier(position_source):  # Est-ce que c'est dans le damier?
+                if position_source not in self.damier.cases:  # Est-ce qu'il y a une piece à la case choisit?
+                    return False, "Il n'y a pas de piece dans votre case."
+                elif self.damier.recuperer_piece_a_position(position_source).couleur != self.couleur_joueur_courant:
+                    # Est-ce que la piece appartient au joeur?
+                    return False, "Cette piece ne vous appartient pas."
+            else:
+                return False, "Vous n'êtes pas dans le damier."
 
-        if not self.damier.piece_de_couleur_peut_faire_une_prise(self.damier.recuperer_piece_a_position(position_source).couleur):
-            # Est-ce que le joueur peut faire une prise?
-            if self.damier.piece_peut_se_deplacer(position_source):  # Puisque le joueur peut pas faire de prise,
-                # est-ce que la piece peut se déplacer
+            if not self.damier.piece_de_couleur_peut_faire_une_prise(self.damier.recuperer_piece_a_position(position_source).couleur):
+                # Est-ce que le joueur de couleure peut faire une prise?
+                if self.damier.piece_peut_se_deplacer(position_source):  # Puisque le joueur ne peut pas faire de prise,
+                    # est-ce que la piece peut se déplacer?
+                    return True, ""
+                else:
+                    return False, "Cette piece ne peut pas se déplacer."
+            # Est-ce que cette piece peut faire une prise lorsque le joueur peut faire une prise?
+            elif self.damier.piece_peut_faire_une_prise(position_source):
                 return True, ""
             else:
-                return False, "Cette piece ne peut pas se déplacer."
-        elif self.damier.piece_peut_faire_une_prise(position_source):  # Est-ce que cette piece peut faire une prise
-            return True, ""
+                return (False,
+                        "Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger.")
         else:
-            return False,"Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."
+            if position_source == self.position_source_forcee:
+                return True, ""
+            else:
+                return False, "Vous devez prendre la même pièce pour faire une prise"
 
     def position_cible_valide(self, position_cible):
         """Vérifie si la position cible est valide (en fonction de la position source sélectionnée). Doit non seulement
@@ -91,27 +99,27 @@ class Partie:
 
         """
 
-        if not self.damier.position_est_dans_damier(position_cible):  # cible dans le damier
-            return False, print("La position cible choisi n'est pas dans le damier.")
-        elif position_cible in self.damier.cases:  # cible déjà occupée
+        if not self.damier.position_est_dans_damier(position_cible):  # La position cible est-elle dans le damier?
+            return False, "La position cible choisi n'est pas dans le damier."
+        elif position_cible in self.damier.cases:  # La position cible est-elle déjà occupée?
             return (False, print("Cette case est déjà occupée par un.e {}."
                     .format(self.damier.cases[position_cible].type_de_piece)))
 
-        # cas de prise
-        if self.damier.piece_peut_faire_une_prise(self.position_source_selectionnee): # est-ce qu'il y a prise ?
-            # cible fait-elle partie des choix de prise?
+        # Le cas où il y a une prise.
+        if self.damier.piece_peut_faire_une_prise(self.position_source_selectionnee):  # Est-ce qu'il y a une prise?
+            # Est-ce que la position cible fait partie des choix de prise?
             if self.damier.piece_peut_sauter_vers(self.position_source_selectionnee, position_cible):
                 return True, ""
             else:
                 # Le choix ne fait pas partie des prises.
-                return False, print("Votre choix n'est pas une prise possible. Veuillez choisir une prise.")
-        # case de déplacement
+                return False, "Votre choix n'est pas une prise possible. Veuillez choisir une prise."
+        # La case de déplacement.
         elif self.damier.piece_peut_se_deplacer_vers(self.position_source_selectionnee, position_cible):
-            # cible fait-elle partie des choix de déplacement ?
-            return True,""
+            # La position cible fait-elle partie des choix de déplacement ?
+            return True, ""
         else:
             # Le choix ne fait pas partie des déplacements possibles.
-            return False, print("Vous ne pouvez vous déplacer à cette endroit.")
+            return False, "Vous ne pouvez vous déplacer à cette endroit."
 
     def demander_positions_deplacement(self):
         """Demande à l'utilisateur les positions sources et cible, et valide ces positions. Cette méthode doit demander
@@ -123,21 +131,21 @@ class Partie:
             Position, Position: Un couple de deux positions (source et cible).
 
         """
-        # demander pour position source
+        # Demandez pour la position source.
         position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
         position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
         self.position_source_selectionnee = Position(position_source_ligne,position_source_colonne)
-        # tant que position est invalide, redemander
+        # Tant que la position est invalide, redemandez.
         while not self.position_source_valide(self.position_source_selectionnee)[0]:
             position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
             position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
             self.position_source_selectionnee = Position(position_source_ligne, position_source_colonne)
 
-        # demander pour position cible
+        # Demander pour position cible.
         position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
         position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
         position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
-        #tant que position est invalide, redemander
+        # Tant que la position est invalide, redemandez.
         while not self.position_cible_valide(position_cible_selectionnee)[0]:
             position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
             position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
@@ -198,7 +206,7 @@ class Partie:
         if self.damier.piece_de_couleur_peut_faire_une_prise(self.couleur_joueur_courant):
             self.doit_prendre = True
 
-        # Affiche l'état du jeu
+        # Affiche l'état du jeu.
         print(self.damier)
         print("")
         print("Tour du joueur", self.couleur_joueur_courant, end=".")
@@ -210,40 +218,40 @@ class Partie:
         else:
             print("")
 
-        # Demander les positions
+        # Demandez les positions.
         position_source, position_cible = self.demander_positions_deplacement()
 
-        # Effectuer le déplacement (à l'aide de la méthode du damier appropriée)
-          # variable qui retourne True si il n'y a pas de déplacement avec prise.
-        pas_de_prise = self.damier.piece_peut_se_deplacer_vers(position_source,position_cible)
+        # Effectuer le déplacement (à l'aide de la méthode du damier appropriée).
+        # Une variable qui retourne True si il n'y a pas de déplacement avec prise.
+        pas_de_prise = self.damier.piece_peut_se_deplacer_vers(position_source, position_cible)
 
-        # tant qu'il y a une erreur de déplacement, on retourne demander les positions
+        # Tant qu'il y a une erreur de déplacement, on retourne demander les positions.
         while self.damier.deplacer(position_source, position_cible) == "erreur":
             print("Erreur de déplacement.\nRecommencez.")
             position_source, position_cible = self.demander_positions_deplacement()
             pas_de_prise = self.damier.piece_peut_se_deplacer_vers(position_source, position_cible)
 
-        # Mettre à jour les attributs de la classe
-        # cas de déplacement sans prise
+        # Ceci mets à jour les attributs de la classe.
+        # Le cas de déplacement sans prise.
         if pas_de_prise:
-            # Changer de jouer courant
+            # On change de jouer courant.
             if self.couleur_joueur_courant == "noir":
                 self.couleur_joueur_courant = "blanc"
             else:
                 self.couleur_joueur_courant = "noir"
-        # cas de déplacement avec prise
+        # Le cas de déplacement avec une prise.
         else:
-            # ne changer pas de joueur courant
+            # S'il ne faut pas changer pas de joueur courant.
             if self.damier.piece_peut_faire_une_prise(position_cible):
-                self.position_source_forcee = position_cible  # forcer la position à selectionner
+                self.position_source_forcee = position_cible  # On force la position à selectionner
                 self.position_source_selectionnee = self.position_source_forcee
             else:
-                # changer de jouer courant
+                # On change de joueur courant.
                 if self.couleur_joueur_courant == "noir":
                     self.couleur_joueur_courant = "blanc"
                 else:
                     self.couleur_joueur_courant = "noir"
-                # remettre les valeurs par défaut du damier
+                # On remet les valeurs par défaut du damier.
                 self.doit_prendre = False
                 self.position_source_forcee = None
 
@@ -280,7 +288,6 @@ if __name__ == "__main__":
             (False, "Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."))
     assert essaie_partie.position_source_valide(Position(5, 2)) == (True, "")
     essaie_partie.damier.cases.pop(Position(4, 3))
-    print(essaie_partie.demander_positions_deplacement())
     print("assert réussit")
 
 

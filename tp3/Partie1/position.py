@@ -121,5 +121,4 @@ if __name__ == '__main__':
     assert Position(-1, -1) in pion.quatre_positions_sauts()
     assert Position(-1,3) in pion.quatre_positions_sauts()
 
-
     print('Test unitaires passés avec succès!')
