@@ -132,61 +132,32 @@ class Partie:
 
         """
         # Demandez pour la position source.
-        position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
-        position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
-        self.position_source_selectionnee = Position(position_source_ligne,position_source_colonne)
-        # Tant que la position est invalide, redemandez.
-        while not self.position_source_valide(self.position_source_selectionnee)[0]:
-            position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
-            position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
-            self.position_source_selectionnee = Position(position_source_ligne, position_source_colonne)
+        erreur = True
+        while erreur is True:
+            try:
+                position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
+                position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
+                erreur = False
+                self.position_source_selectionnee = Position(position_source_ligne,position_source_colonne)
 
-        # Demander pour position cible.
-        position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
-        position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
-        position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
-        # Tant que la position est invalide, redemandez.
-        while not self.position_cible_valide(position_cible_selectionnee)[0]:
-            position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
-            position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
-            position_cible_selectionnee = Position(position_cible_ligne, position_cible_colonne)
+            # Si erreur de frappe, le joueur peut entrer à nouveau ses positions.
+            except ValueError:
+                print("Vous n'avez pas tapé un chiffre.\n-Veuillez recommencer.-")
+
+        # Demander pour la position cible.
+        erreur_2 = True
+        position_cible_selectionnee = None
+        while erreur_2 is True:
+            try:
+                position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
+                position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
+                erreur_2 = False
+                position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
+            # Si erreur de frappe' le joueur peut entrer à nouveau ses positions.
+            except ValueError:
+                print("vous n'avez pas tapé un chiffre.\n-Veuillez Recommencer.-")
 
         return self.position_source_selectionnee, position_cible_selectionnee
-
-
-        # ON NE SAIT PAS COMMENT S'OCCUPPER DES CAS D'EXEPTION ENCORE, IL VA FALLOIR Y RETOURNER
-        # J'AGIS COMME SI CE N'EST QUE DES ENTIERS QU'IL VONT RENTRER
-        # position_source_ligne = ""
-        # position_source_colone = ""
-        # position_cible_ligne = ""
-        # position_cible_colone = ""
-        #
-        # while position_source_ligne == "" and position_source_colone == "" and position_cible_ligne == "" and position_cible_colone == "":
-        #     position_source_ligne = int(input("Veuillez entrer votre position source (ligne) : "))
-        #     position_source_colone = int(input("Veuillez entrer votre position source (colone) : "))
-        #     position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
-        #     position_cible_colone = int(input("Veuillez entrer votre position cible (colone) : "))
-        #     position_source_selectionnee = Position(position_source_ligne, position_source_colone)
-        #     position_cible_selectionnee = Position(position_cible_ligne, position_cible_colone)
-        #
-        #     if not self.position_source_valide(position_source_selectionnee)[0]:
-        #         print("Votre position source est invalide car: ", self.position_source_valide(position_source_selectionnee)[1])
-        #         position_source_ligne = ""
-        #         position_source_colone = ""
-        #         position_cible_ligne = ""
-        #         position_cible_colone = ""
-        #
-        #     # position_cible_valide pas encore écrit au moment de l'écriture
-        #     elif not self.position_cible_valide(position_cible_selectionnee)[0]:
-        #         print("Votre position source est invalide car: ", self.position_cible_valide(position_cible_selectionnee)[1])
-        #         position_source_ligne = ""
-        #         position_source_colone = ""
-        #         position_cible_ligne = ""
-        #         position_cible_colone = ""
-        # # Il n'y aura pas le probleme mentionner,
-        # # parce qu'il ne sortira jamais du "while" sans avoir de position source et cible valide
-        # return (position_source_selectionnee, position_cible_selectionnee)
-
 
     def tour(self):
         """Cette méthode effectue le tour d'un joueur, et doit effectuer les actions suivantes:
