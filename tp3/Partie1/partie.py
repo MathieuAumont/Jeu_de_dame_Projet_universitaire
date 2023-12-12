@@ -1,9 +1,10 @@
-# Auteurs: Kim vaillancourt et Mathieu Aumont
+# Auteur.trice.s: Kim vaillancourt et Mathieu Aumont
 
 from tp3.Partie1.damier import Damier
 from tp3.Partie1.position import Position
 # le prochain est pour les testes
 from tp3.Partie1.piece import Piece
+
 
 class Partie:
     """Gestionnaire de partie de dames.
@@ -246,7 +247,7 @@ class Partie:
 
 # NON ÉVALUER MAIS POUR M'AIDER
 if __name__ == "__main__":
-
+    print("tests unitaires de la classe 'Partie'...")
     # Teste position_source_valide
     essaie_partie = Partie()
     assert essaie_partie.position_source_valide(Position(-1, 5)) == (False, "Vous n'êtes pas dans le damier.")
@@ -259,7 +260,5 @@ if __name__ == "__main__":
             (False, "Vous ne pouvez pas bougez cette piece parce qu'une autre piece à la possibilité de manger."))
     assert essaie_partie.position_source_valide(Position(5, 2)) == (True, "")
     essaie_partie.damier.cases.pop(Position(4, 3))
-    print("assert réussit")
 
-
-
+    print("tests unitaires passés avec succès!")

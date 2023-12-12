@@ -1,4 +1,4 @@
-# Auteurs: Kim Vaillancourt et Mathieu Aumont
+# Auteur.trice.s: Kim Vaillancourt et Mathieu Aumont (Équipe 12)
 
 
 class Position:

@@ -15,11 +15,10 @@ class FenetrePartie(Tk):
         position_forcee (Position) : Position obligatoire si le joueur peut effectuer plusieurs prises
         position_cible (Position) : Position de déplacement choisi
         joueur_courant (Partie) : Couleur du joueur actif
-        message_couleur (Label) : un "widget" affichant la couleur du joueur actif
+        messages_couleur (Label) : un "widget" affichant la couleur du joueur actif
         messages (Label): Un «widget» affichant des messages textes à l'utilisateur du programme
         bouton_partie (Button) : un "widget" bouton qui permet de recommencer une partie
         bouton_quitter (Button) : un "widget" bouton qui permet de quitter la partie (autrement que par le X)
-
     """
 
     def __init__(self):
@@ -170,7 +169,6 @@ class FenetrePartie(Tk):
     def deplacement_invalide(self, position_cible):
         """ Méthode informant le joueur que son déplacement est invalide.
 
-        :param position_source: (Position) : Position de la pièce de départ du joueur.
         :param position_cible: (Position) : Position ciblée par le joueur
         :return: (bool) : True si déplacement invalide. False si autrement.
 
@@ -359,7 +357,7 @@ class FenetrePartie(Tk):
         """
 
         if self.prise_obligatoire_couleur(self.joueur_courant):
-            for position in self.partie.position_source_selectionnee.quatre_positions_sauts():
+            for position in position_source.quatre_positions_sauts():
                 if self.partie.damier.piece_peut_sauter_vers(position_source, position):
                     self.canvas_damier.create_rectangle(position.colonne * self.canvas_damier.n_pixels_par_case,
                                                         position.ligne * self.canvas_damier.n_pixels_par_case,
@@ -370,8 +368,19 @@ class FenetrePartie(Tk):
                     self.canvas_damier.delete("piece")
                     self.canvas_damier.dessiner_pieces()
         else:
+            if self.partie.damier.cases[position_source].type_de_piece == "dame":
+                for position in position_source.quatre_positions_diagonales():
+                    if self.partie.damier.piece_peut_se_deplacer_vers(position_source, position):
+                        self.canvas_damier.create_rectangle(position.colonne * self.canvas_damier.n_pixels_par_case,
+                                                            position.ligne * self.canvas_damier.n_pixels_par_case,
+                                                            position.colonne * self.canvas_damier.n_pixels_par_case +
+                                                            self.canvas_damier.n_pixels_par_case,
+                                                            position.ligne * self.canvas_damier.n_pixels_par_case +
+                                                            self.canvas_damier.n_pixels_par_case, fill="orange")
+                        self.canvas_damier.delete("piece")
+                        self.canvas_damier.dessiner_pieces()
             if self.joueur_courant == "blanc":
-                for position in self.partie.position_source_selectionnee.positions_diagonales_haut():
+                for position in position_source.positions_diagonales_haut():
                     if self.partie.damier.piece_peut_se_deplacer_vers(position_source, position):
                         self.canvas_damier.create_rectangle(position.colonne * self.canvas_damier.n_pixels_par_case,
                                                             position.ligne * self.canvas_damier.n_pixels_par_case,
@@ -382,7 +391,7 @@ class FenetrePartie(Tk):
                         self.canvas_damier.delete("piece")
                         self.canvas_damier.dessiner_pieces()
             else:
-                for position in self.partie.position_source_selectionnee.positions_diagonales_bas():
+                for position in position_source.positions_diagonales_bas():
                     if self.partie.damier.piece_peut_se_deplacer_vers(position_source, position):
                         self.canvas_damier.create_rectangle(position.colonne * self.canvas_damier.n_pixels_par_case,
                                                             position.ligne * self.canvas_damier.n_pixels_par_case,

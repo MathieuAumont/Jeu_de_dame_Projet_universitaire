@@ -1,4 +1,4 @@
-#Auteurs: Kim et Mathieu
+# Auteur.trice.s: Kim Vaillancourt et Mathieu Aumont (Équipe 12)
 
 from tp3.Partie1.piece import Piece
 from tp3.Partie1.position import Position
@@ -306,7 +306,6 @@ class Damier:
             if self.cases[element].couleur == couleur and self.piece_peut_faire_une_prise(element):
                 return True
         return False
-
 
     def deplacer(self, position_source, position_cible):
         """Effectue le déplacement sur le damier. Si le déplacement est valide, on doit mettre à jour le dictionnaire
@@ -640,10 +639,9 @@ if __name__ == "__main__":
     assert damier_vide.deplacer(Position(1,3), Position(2,4)) == "erreur"
     assert damier_teste_kim.deplacer(Position(4,1), Position(3,1)) == "erreur"
 
-
-    print("damier de base\n", un_damier)
-    print("damier Kim\n", damier_teste_kim)
-    print("damier Mathieu\n", damier_test)
-    print("damier Vide\n", damier_vide)
+    # print("damier de base\n", un_damier)
+    # print("damier Kim\n", damier_teste_kim)
+    # print("damier Mathieu\n", damier_test)
+    # print("damier Vide\n", damier_vide)
 
     print('Test unitaires passés avec succès!')
