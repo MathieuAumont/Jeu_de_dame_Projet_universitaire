@@ -140,7 +140,7 @@ class Damier:
             bool: True si la pièce peut se déplacer à la position cible, False autrement.
 
         """
-        # Les cas d'exeptions ou il pourrait se produire une erreur.
+        # Les cas d'exeptions où il pourrait se produire une erreur.
         if self.recuperer_piece_a_position(position_cible) is not None:  # Le cas où il y a une piece à
             # la position cible.
             return False
@@ -148,6 +148,8 @@ class Damier:
             return False
         if self.recuperer_piece_a_position(
                 position_piece) is None:  # Le cas où à la position initiale il n'y a pas de piece.
+            return False
+        if not self.position_est_dans_damier(position_piece):  # Le cas où la position initiale n'est pas dans le damier
             return False
 
         # il faut regarder la couleur et le type de piece pour avoir les vrai bon déplacement.
@@ -184,7 +186,7 @@ class Damier:
         # 1. la position de la pièce initiale n'est pas dans le plateau
         # 2. La position cible contient une piece
         # 3. La position cible est impossible à atteindre avec un saut.
-        # 4. La position cible n'set pas dans le plateau.
+        # 4. La position cible n'est pas dans le plateau.
         # Si la situation ce trouve dans un des cas, alors la pièce ne peut pas faire de prises.
 
         if (position_piece not in self.cases or position_cible in self.cases or
@@ -192,7 +194,7 @@ class Damier:
                 not self.position_est_dans_damier(position_cible)):
             return False
 
-        # Cette étape permet de determiner la position ou il y aurait possiblement une piece.
+        # Cette étape permet de determiner la position où il y aurait possiblement une piece.
         # Cela se fait en trouvant la case commune entre la position initiale et la position cible.
         position_centre = None
         for position in position_piece.quatre_positions_diagonales():
@@ -260,12 +262,9 @@ class Damier:
             bool: True si une pièce est à la position reçue et celle-ci peut faire une prise. False autrement.
 
         """
-        if self.recuperer_piece_a_position(position_piece) is None:
-            # Le cas où à la position initiale il n'y a pas de piece.
-            return False
-
         for position in position_piece.quatre_positions_sauts():
-            if self.piece_peut_sauter_vers(position_piece, position):
+            if self.piece_peut_sauter_vers(position_piece, position):  # Si la pièce passe à travers tous les cas
+                # d'éception et peut encore se déplacer, alors elle peut se déplacer.
                 return True
 
         return False
@@ -283,7 +282,7 @@ class Damier:
             bool: True si une pièce de la couleur reçue peut faire un déplacement standard, False autrement.
         """
         for piece in self.cases:  # En regardant toutes les pièces, si elle est de la couleur demander et que cette
-            # pièce peut se déplacer, alors la pièce de la couleur peut se déplacer.
+            # pièce peut se déplacer, alors une pièce de la couleur peut se déplacer.
             if self.cases[piece].couleur == couleur and self.piece_peut_se_deplacer(piece):
                 return True
         return False
@@ -301,7 +300,7 @@ class Damier:
         Returns:
             bool: True si une pièce de la couleur reçue peut faire un saut (une prise), False autrement.
         """
-        for element in self.cases: # En regardant toutes les pièces, si elle est de la couleur demander et que cette
+        for element in self.cases:  # En regardant toutes les pièces, si elle est de la couleur demander et que cette
             # pièce peut faire une prise, alors la pièce de la couleur spécifique peut faire une prise.
             if self.cases[element].couleur == couleur and self.piece_peut_faire_une_prise(element):
                 return True
@@ -642,6 +641,6 @@ if __name__ == "__main__":
     # print("damier de base\n", un_damier)
     # print("damier Kim\n", damier_teste_kim)
     # print("damier Mathieu\n", damier_test)
-    # print("damier Vide\n", damier_vide)
+    #  print("damier Vide\n", damier_vide)
 
     print('Test unitaires passés avec succès!')

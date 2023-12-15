@@ -100,14 +100,14 @@ class FenetrePartie(Tk):
                 self.canvas_damier.actualiser()
 
         elif piece.couleur != self.joueur_courant:  # Lorsque la pièce n'appartient pas au joueur.
-            if self.position_forcee is not None: # cas de position forcée
-                self.message_aux_joueurs('erreur') # message d'erreur de déplacement.
-            elif self.partie.position_source_selectionnee is None: # Message de pièce de l'adversaire
+            if self.position_forcee is not None:  # cas de position forcée
+                self.message_aux_joueurs('erreur')  # message d'erreur de déplacement.
+            elif self.partie.position_source_selectionnee is None:  # Message de pièce de l'adversaire
                 self.message_aux_joueurs('mauvaise piece')
                 self.canvas_damier.actualiser()
                 self.nouvelle_piece_source()
-            else: # Si position_source est déjà sélectionné et qu'elle n'est pas forcée.
-                self.message_aux_joueurs("erreur") # erreur de déplacement.
+            else:  # Si position_source est déjà sélectionné et qu'elle n'est pas forcée.
+                self.message_aux_joueurs("erreur")  # erreur de déplacement.
         else:  # Lorsque la pièce lui appartient.
             if self.prise_obligatoire_couleur(self.joueur_courant):
                 self.message_aux_joueurs('prise')
@@ -127,7 +127,7 @@ class FenetrePartie(Tk):
         """
         Méthode qui s'occupe de déplacer les pieces dans le canvas.
         :param position_source: (Position) la position de la piece à déplacer
-        :param position_cible: (Position) l'arriver voulu de la piece sélectionnee
+        :param position_cible: (Position) l'arriver voulu de la piece sélectionnée
 
         """
 

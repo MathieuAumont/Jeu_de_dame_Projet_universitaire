@@ -105,15 +105,15 @@ if __name__ == '__main__':
 
     pion = Position(1, 1)
 
-    assert Position(2,0) in pion.positions_diagonales_bas()
+    assert Position(2, 0) in pion.positions_diagonales_bas()
     assert Position(2, 2) in pion.positions_diagonales_bas()
 
-    assert Position(0,0) in pion.positions_diagonales_haut()
+    assert Position(0, 0) in pion.positions_diagonales_haut()
     assert Position(0, 2) in pion.positions_diagonales_haut()
 
-    assert Position(2,0) in pion.quatre_positions_diagonales()
-    assert Position(2, 2) in pion.quatre_positions_diagonales()
-    assert Position(0,0) in pion.quatre_positions_diagonales()
+    assert Position(2, 0) in pion.quatre_positions_diagonales()
+    assert Position(2,  2) in pion.quatre_positions_diagonales()
+    assert Position(0, 0) in pion.quatre_positions_diagonales()
     assert Position(0, 2) in pion.quatre_positions_diagonales()
 
     assert Position(3, -1) in pion.quatre_positions_sauts()

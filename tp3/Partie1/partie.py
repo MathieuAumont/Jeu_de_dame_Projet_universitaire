@@ -64,7 +64,7 @@ class Partie:
                 if position_source not in self.damier.cases:  # Est-ce qu'il y a une piece à la case choisit?
                     return False, "Il n'y a pas de piece dans votre case."
                 elif self.damier.recuperer_piece_a_position(position_source).couleur != self.couleur_joueur_courant:
-                    # Est-ce que la piece appartient au joeur?
+                    # Est-ce que la piece appartient au joueur?
                     return False, "Cette piece ne vous appartient pas."
             else:
                 return False, "Vous n'êtes pas dans le damier."
@@ -133,30 +133,42 @@ class Partie:
 
         """
         # Demandez pour la position source.
-        erreur = True
-        while erreur is True:
+        erreur_position_source = True
+        while erreur_position_source is True:
             try:
                 position_source_ligne = int(input("Veuillez entrer votre position source(ligne) : "))
                 position_source_colonne = int(input("Veuillez entrer votre position source(colonne) : "))
-                erreur = False
-                self.position_source_selectionnee = Position(position_source_ligne,position_source_colonne)
+                if (position_source_colonne not in range(0, self.damier.n_colonnes) or position_source_ligne not in
+                        range(0, self.damier.n_lignes)):
+                    raise TypeError
+                erreur_position_source = False
+                self.position_source_selectionnee = Position(position_source_ligne, position_source_colonne)
 
             # Si erreur de frappe, le joueur peut entrer à nouveau ses positions.
             except ValueError:
                 print("Vous n'avez pas tapé un chiffre.\n-Veuillez recommencer.-")
+            except TypeError:
+                print("Vous n'avez pas tapé un chiffre valide, il ne se trouve pas dans le damier."
+                      "\n-Veuillez recommencer.-")
 
         # Demander pour la position cible.
-        erreur_2 = True
+        erreur_position_cible = True
         position_cible_selectionnee = None
-        while erreur_2 is True:
+        while erreur_position_cible is True:
             try:
                 position_cible_ligne = int(input("Veuillez entrer votre position cible (ligne) : "))
                 position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
-                erreur_2 = False
+                if (position_cible_colonne not in range(0, self.damier.n_colonnes) or position_cible_ligne not in
+                        range(0, self.damier.n_lignes)):
+                    raise TypeError
+                erreur_position_cible = False
                 position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
             # Si erreur de frappe' le joueur peut entrer à nouveau ses positions.
             except ValueError:
                 print("vous n'avez pas tapé un chiffre.\n-Veuillez Recommencer.-")
+            except TypeError:
+                print("Vous n'avez pas tapé un chiffre valide, il ne se trouve pas dans le damier."
+                      "\n-Veuillez recommencer.-")
 
         return self.position_source_selectionnee, position_cible_selectionnee
 
@@ -245,7 +257,7 @@ class Partie:
             return "blanc"
 
 
-# NON ÉVALUER MAIS POUR M'AIDER
+# NON ÉVALUER MAIS POUR NOUS AIDER
 if __name__ == "__main__":
     print("tests unitaires de la classe 'Partie'...")
     # Teste position_source_valide
@@ -262,3 +274,4 @@ if __name__ == "__main__":
     essaie_partie.damier.cases.pop(Position(4, 3))
 
     print("tests unitaires passés avec succès!")
+    print(essaie_partie.demander_positions_deplacement())
