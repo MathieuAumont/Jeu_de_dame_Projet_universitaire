@@ -103,8 +103,8 @@ class Partie:
         if not self.damier.position_est_dans_damier(position_cible):  # La position cible est-elle dans le damier?
             return False, "La position cible choisi n'est pas dans le damier."
         elif position_cible in self.damier.cases:  # La position cible est-elle déjà occupée?
-            return (False, print("Cette case est déjà occupée par un.e {}."
-                    .format(self.damier.cases[position_cible].type_de_piece)))
+            return (False, "Cette case est déjà occupée par un.e {}."
+                    .format(self.damier.cases[position_cible].type_de_piece))
 
         # Le cas où il y a une prise.
         if self.damier.piece_peut_faire_une_prise(self.position_source_selectionnee):  # Est-ce qu'il y a une prise?
@@ -141,15 +141,18 @@ class Partie:
                 if (position_source_colonne not in range(0, self.damier.n_colonnes) or position_source_ligne not in
                         range(0, self.damier.n_lignes)):
                     raise TypeError
-                erreur_position_source = False
                 self.position_source_selectionnee = Position(position_source_ligne, position_source_colonne)
-
+                if self.position_source_valide(self.position_source_selectionnee)[1] != "":
+                    raise PositionError
+                erreur_position_source = False
             # Si erreur de frappe, le joueur peut entrer à nouveau ses positions.
             except ValueError:
                 print("Vous n'avez pas tapé un chiffre.\n-Veuillez recommencer.-")
             except TypeError:
                 print("Vous n'avez pas tapé un chiffre valide, il ne se trouve pas dans le damier."
                       "\n-Veuillez recommencer.-")
+            except PositionError:
+                print(self.position_source_valide(self.position_source_selectionnee)[1])
 
         # Demander pour la position cible.
         erreur_position_cible = True
@@ -160,15 +163,19 @@ class Partie:
                 position_cible_colonne = int(input("Veuillez entrer votre position cible (colonne) : "))
                 if (position_cible_colonne not in range(0, self.damier.n_colonnes) or position_cible_ligne not in
                         range(0, self.damier.n_lignes)):
-                    raise TypeError
-                erreur_position_cible = False
+                    raise TypeError()
                 position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
+                if self.position_cible_valide(position_cible_selectionnee)[1] != "":
+                    raise PositionError()
+                erreur_position_cible = False
             # Si erreur de frappe' le joueur peut entrer à nouveau ses positions.
             except ValueError:
                 print("vous n'avez pas tapé un chiffre.\n-Veuillez Recommencer.-")
             except TypeError:
                 print("Vous n'avez pas tapé un chiffre valide, il ne se trouve pas dans le damier."
                       "\n-Veuillez recommencer.-")
+            except PositionError:
+                print(self.position_cible_valide(position_cible_selectionnee)[1])
 
         return self.position_source_selectionnee, position_cible_selectionnee
 
@@ -206,14 +213,11 @@ class Partie:
         position_source, position_cible = self.demander_positions_deplacement()
 
         # Effectuer le déplacement (à l'aide de la méthode du damier appropriée).
-        # Une variable qui retourne True si il n'y a pas de déplacement avec prise.
+        # Une variable qui retourne True s'il n'y a pas de déplacement avec prise.
         pas_de_prise = self.damier.piece_peut_se_deplacer_vers(position_source, position_cible)
 
-        # Tant qu'il y a une erreur de déplacement, on retourne demander les positions.
-        while self.damier.deplacer(position_source, position_cible) == "erreur":
-            print("Erreur de déplacement.\nRecommencez.")
-            position_source, position_cible = self.demander_positions_deplacement()
-            pas_de_prise = self.damier.piece_peut_se_deplacer_vers(position_source, position_cible)
+        # Déplacement de la pièce
+        self.damier.deplacer(position_source, position_cible)
 
         # Ceci mets à jour les attributs de la classe.
         # Le cas de déplacement sans prise.
@@ -256,6 +260,12 @@ class Partie:
         else:
             return "blanc"
 
+
+class PositionError(Exception):
+    """
+    Classe d'exception personnalisée permettant d'envoyé un message au joueur lors du choix de position invalide.
+    """
+    pass
 
 # NON ÉVALUER MAIS POUR NOUS AIDER
 if __name__ == "__main__":
