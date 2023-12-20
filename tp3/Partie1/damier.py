@@ -52,46 +52,6 @@ class Damier:
             Position(0, 7): Piece("noir", "pion"),
         }
 
-        # Le dictionnaire ci-dessous n'est que pour permettre de tester les prises obligatoires dans le jeu.
-        # Par exemple, lorsque deux pièce peut faire une prise,il faut s'assurer que seul la pièce ayant déjà  fait une
-        # prise peut bouger.
-
-        # self.cases = {
-        # Position(7, 6): Piece("blanc", "pion"),
-        # Position(6, 5): Piece("noir", "pion"),
-        # Position(4, 3): Piece("noir", "pion"),
-        # Position(6, 7): Piece("blanc", "pion"),
-        # Position(5, 6): Piece("noir", "pion"),
-        # }
-
-        # Le dictionnaire ci-dessous n'est que pour permettre de tester les fonctionnalité des dames.
-        # self.cases = {
-            # Position(7, 0): Piece("blanc", "dame"),
-            # Position(7, 2): Piece("blanc", "dame"),
-            # Position(7, 4): Piece("blanc", "dame"),
-            # Position(7, 6): Piece("blanc", "dame"),
-            # Position(6, 1): Piece("blanc", "dame"),
-            # Position(6, 3): Piece("blanc", "dame"),
-            # Position(6, 5): Piece("blanc", "dame"),
-            # Position(6, 7): Piece("blanc", "dame"),
-            # Position(5, 0): Piece("blanc", "dame"),
-            # Position(5, 2): Piece("blanc", "dame"),
-            # Position(5, 4): Piece("blanc", "dame"),
-            # Position(5, 6): Piece("blanc", "dame"),
-            # Position(2, 1): Piece("noir", "dame"),
-            # Position(2, 3): Piece("noir", "dame"),
-            # Position(2, 5): Piece("noir", "dame"),
-            # Position(2, 7): Piece("noir", "dame"),
-            # Position(1, 0): Piece("noir", "dame"),
-            # Position(1, 2): Piece("noir", "dame"),
-            # Position(1, 4): Piece("noir", "dame"),
-            # Position(1, 6): Piece("noir", "dame"),
-            # Position(0, 1): Piece("noir", "dame"),
-            # Position(0, 3): Piece("noir", "dame"),
-            # Position(0, 5): Piece("noir", "dame"),
-            # Position(0, 7): Piece("noir", "dame"),
-        # }
-
     def recuperer_piece_a_position(self, position):
         """Récupère une pièce dans le damier à partir d'une position.
 
@@ -406,7 +366,7 @@ if __name__ == "__main__":
     damier_test = Damier()
     damier_test.cases[Position(4, 3)] = Piece("noir", "pion")
     damier_test.cases[Position(4, 5)] = Piece("blanc", "pion")
-    damier_test.cases[Position(3,2)] = Piece("blanc", "dame")
+    damier_test.cases[Position(3, 2)] = Piece("blanc", "dame")
     assert un_damier.piece_peut_sauter_vers(Position(7, 1), Position(5, 4)) is False
     assert un_damier.piece_peut_sauter_vers(Position(6, 6), Position(4, 4)) is False
     assert un_damier.piece_peut_sauter_vers(Position(5, 2), Position(3, 4)) is False
@@ -500,12 +460,12 @@ if __name__ == "__main__":
     damier_vide.cases[Position(1, 2)] = Piece("noir", "pion")
     assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
     # Teste dame s'il n'y a personne mangé.
-    damier_vide.cases.pop(Position(1,2))
+    damier_vide.cases.pop(Position(1, 2))
     assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
-    # Teste dame s'il l'arriver n'est pas dans le damier.
+    # Teste dame si l'arrivée n'est pas dans le damier.
     damier_vide.cases[Position(1, 0)] = Piece("noir", "dame")
     assert not damier_vide.piece_peut_faire_une_prise(Position(0, 1))
-    # Teste dame s'il l'arriver contient une piece.
+    # Teste dame si l'arrivée contient une piece.
     damier_vide.cases.pop(Position(1, 0))
     damier_vide.cases[Position(1, 2)] = Piece("blanc", "pion")
     damier_vide.cases[Position(2, 3)] = Piece("blanc", "pion")
@@ -617,7 +577,7 @@ if __name__ == "__main__":
     # test piece_de_couleur_peut_se_deplacer.
     assert un_damier.piece_de_couleur_peut_se_deplacer("noir") is True
     assert un_damier.piece_de_couleur_peut_se_deplacer("blanc") is True
-    damier_vide.cases[Position(2,0)] = Piece("noir", "pion")
+    damier_vide.cases[Position(2, 0)] = Piece("noir", "pion")
     damier_vide.cases[Position(2, 2)] = Piece("noir", "pion")
     damier_vide.cases[Position(3, 1)] = Piece("blanc", "pion")
     assert damier_vide.piece_de_couleur_peut_se_deplacer("blanc") is False
@@ -630,17 +590,12 @@ if __name__ == "__main__":
     assert not damier_teste_kim.piece_de_couleur_peut_faire_une_prise("noir")
 
     # tests deplacer().
-    assert damier_teste_kim.deplacer(Position(5,0), Position(3,2)) == "prise"
-    assert damier_teste_kim.deplacer(Position(2,5), Position(3,4)) == "ok"
-    damier_vide.cases[Position(6,0)] = Piece("noir","pion")
-    assert damier_vide.deplacer(Position(6,0), Position(7,1)) == "ok"
-    assert damier_vide.cases[Position(7,1)].type_de_piece == "dame"
-    assert damier_vide.deplacer(Position(1,3), Position(2,4)) == "erreur"
-    assert damier_teste_kim.deplacer(Position(4,1), Position(3,1)) == "erreur"
-
-    # print("damier de base\n", un_damier)
-    # print("damier Kim\n", damier_teste_kim)
-    # print("damier Mathieu\n", damier_test)
-    #  print("damier Vide\n", damier_vide)
+    assert damier_teste_kim.deplacer(Position(5, 0), Position(3, 2)) == "prise"
+    assert damier_teste_kim.deplacer(Position(2, 5), Position(3, 4)) == "ok"
+    damier_vide.cases[Position(6, 0)] = Piece("noir", "pion")
+    assert damier_vide.deplacer(Position(6, 0), Position(7, 1)) == "ok"
+    assert damier_vide.cases[Position(7, 1)].type_de_piece == "dame"
+    assert damier_vide.deplacer(Position(1, 3), Position(2, 4)) == "erreur"
+    assert damier_teste_kim.deplacer(Position(4, 1), Position(3, 1)) == "erreur"
 
     print('Test unitaires passés avec succès!')

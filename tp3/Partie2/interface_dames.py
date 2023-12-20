@@ -1,6 +1,6 @@
 # Auteurs: Kim et Mathieu
 
-from tkinter import Tk, Label, NSEW, Button, Canvas
+from tkinter import Tk, Label, NSEW, Button
 from tp3.Partie2.canvas_damier import CanvasDamier
 from tp3.Partie1.partie import Partie
 from tp3.Partie1.position import Position

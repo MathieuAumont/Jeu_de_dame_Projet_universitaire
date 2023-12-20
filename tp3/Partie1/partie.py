@@ -69,7 +69,8 @@ class Partie:
             else:
                 return False, "Vous n'êtes pas dans le damier."
 
-            if not self.damier.piece_de_couleur_peut_faire_une_prise(self.damier.recuperer_piece_a_position(position_source).couleur):
+            if not (self.damier.piece_de_couleur_peut_faire_une_prise
+                    (self.damier.recuperer_piece_a_position(position_source).couleur)):
                 # Est-ce que le joueur de couleure peut faire une prise?
                 if self.damier.piece_peut_se_deplacer(position_source):  # Puisque le joueur ne peut pas faire de prise,
                     # est-ce que la piece peut se déplacer?
@@ -164,7 +165,7 @@ class Partie:
                 if (position_cible_colonne not in range(0, self.damier.n_colonnes) or position_cible_ligne not in
                         range(0, self.damier.n_lignes)):
                     raise TypeError()
-                position_cible_selectionnee = Position(position_cible_ligne,position_cible_colonne)
+                position_cible_selectionnee = Position(position_cible_ligne, position_cible_colonne)
                 if self.position_cible_valide(position_cible_selectionnee)[1] != "":
                     raise PositionError()
                 erreur_position_cible = False
@@ -267,6 +268,7 @@ class PositionError(Exception):
     """
     pass
 
+
 # NON ÉVALUER MAIS POUR NOUS AIDER
 if __name__ == "__main__":
     print("tests unitaires de la classe 'Partie'...")
@@ -284,4 +286,3 @@ if __name__ == "__main__":
     essaie_partie.damier.cases.pop(Position(4, 3))
 
     print("tests unitaires passés avec succès!")
-    print(essaie_partie.demander_positions_deplacement())
